@@ -1,0 +1,47 @@
+{
+  "AccessoryInformation": {
+      "OptionalCharacteristics": [
+         "HardwareRevision",
+         "AccessoryFlags"
+      ],
+      "RequiredCharacteristics": [
+         "Identify",
+         "Manufacturer",
+         "Model",
+         "Name",
+         "SerialNumber",
+         "FirmwareRevision"
+      ],
+      "UUID": "0000003E-0000-1000-8000-0026BB765291"
+   },
+  "GardenHub": {
+    "OptionalCharacteristics": [
+      "StatusActive",
+      "StatusFault",
+      "Name",
+      "NumberSensors"
+    ],
+      "RequiredCharacteristics": [
+         "IsConfigured"
+      ],
+      "UUID": "0000003E-0000-1000-8000-0026BB765291"
+  },
+  "SoilMoistureSensor": {
+    "OptionalCharacteristics": [
+      "StatusActive",
+      "IsConfigured",
+      "Channel",
+      "StatusFault",
+      "Name",
+      "Slope",
+      "Intercept",
+      "MaxVoltage",
+      "MinVoltage"
+    ],
+    "RequiredCharacteristics": [
+      "SoilMoisture"
+    ],
+    "UUID": "00000082-0000-1000-8000-0026BB765291"
+  }
+
+}
