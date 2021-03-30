@@ -9,6 +9,7 @@ class AirTemperatureHumiditySensor(Accessory):
     index = None
     channel = None
     air_temp_hum_service = None
+    air_temp_hum_service2 = None
     char_temp = None
     char_hum = None
     category = CATEGORY_SENSOR
@@ -16,13 +17,15 @@ class AirTemperatureHumiditySensor(Accessory):
     name = None
     display_name = None
 
-    def __init__(self, driver, **kwargs):
+    def __init__(self, driver, display_name, **kwargs):
         self.from_json(kwargs["data"])
+        if self.display_name is None:
+            self.display_name = display_name + "TempAndHumidity"
         super().__init__(driver, self.display_name)
         self.add_air_temp_hum_service()
 
     def as_json(self):
-        sensor_dict = {"name": self.name, "index": self.index, "aid": self.aid, "serial_no": self.serial_no,
+        sensor_dict = {"aid": self.aid, "serial_no": self.serial_no,
 
                        "display_name": self.display_name}
         return sensor_dict
@@ -50,14 +53,22 @@ class AirTemperatureHumiditySensor(Accessory):
 
     def add_air_temp_hum_service(self):
 
-        self.air_temp_hum_service = self.add_preload_service("AirTempAndHumiditySensor")
-        self.char_hum = self.air_temp_hum_service.configure_char("CurrentAirHumidity")
-        self.char_temp = self.air_temp_hum_service.configure_char("CurrentAirTemperature")
+        # self.air_temp_hum_service = self.add_preload_service("TemperatureSensor")
+        # self.air_temp_hum_service2 = self.add_preload_service("HumiditySensor")
+        # self.char_hum = self.air_temp_hum_service.configure_char("CurrentAirHumidity")
+        # self.char_temp = self.air_temp_hum_service2.configure_char("CurrentAirTemperature")
+
+        serv_temp = self.add_preload_service('TemperatureSensor')
+        serv_humidity = self.add_preload_service('HumiditySensor')
+
+        self.char_temp = serv_temp.get_characteristic('CurrentTemperature')
+        self.char_hum = serv_humidity \
+            .get_characteristic('CurrentRelativeHumidity')
 
     async def run(self):
-        temperature_f = dhti.get_temp_f()
+        temperature_f = dhti.get_temp_c()
         humidity = dhti.get_humidity()
         self.char_temp.set_value(temperature_f)
-        self.char_hum.set_value(temperature_f)
+        self.char_hum.set_value(humidity)
         self.logger.debug("Current Air Temp(F): " + str(temperature_f))
         self.logger.debug("Current Humidity: " + str(humidity))

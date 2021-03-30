@@ -9,6 +9,7 @@ class LightSensor(Accessory):
     index = None
     channel = None
     light_service = None
+    light_service2 = None
     char_ambient = None
     char_lux = None
     category = CATEGORY_SENSOR
@@ -16,13 +17,15 @@ class LightSensor(Accessory):
     name = None
     display_name = None
 
-    def __init__(self, driver, **kwargs):
+    def __init__(self, driver, display_name, **kwargs):
         self.from_json(kwargs["data"])
+        if self.display_name is None:
+            self.display_name = display_name + "LightSensor"
         super().__init__(driver, self.display_name)
         self.add_light_service()
 
     def as_json(self):
-        sensor_dict = {"name": self.name, "index": self.index, "aid": self.aid, "serial_no": self.serial_no,
+        sensor_dict = {"aid": self.aid, "serial_no": self.serial_no,
 
                        "display_name": self.display_name}
         return sensor_dict
@@ -46,19 +49,18 @@ class LightSensor(Accessory):
         serv_info.configure_char("Name", value=self.display_name)
         serv_info.configure_char("SerialNumber", value=self.serial_no)
         serv_info.configure_char("Manufacturer", value="BellyFrito")
-        serv_info.configure_char("Model", value="SoilMoistureSensor")
+        serv_info.configure_char("Model", value="LightLevelSensor")
         self.add_service(serv_info)
 
     def add_light_service(self):
 
-        self.light_service = self.add_preload_service("LightLevelSensor")
+        self.light_service = self.add_preload_service("LightSensor")
         self.char_ambient = self.light_service.configure_char("CurrentAmbientLightLevel")
-        self.char_lux = self.light_service.configure_char("CurrentLuxLevel")
+
 
     async def run(self):
         light = veml.veml7700.light
         lux = veml.veml7700.lux
         self.char_ambient.set_value(light)
-        self.char_lux.set_value(lux)
         self.logger.debug("Current light: " + str(light))
         self.logger.debug("Current lux: " + str(lux))

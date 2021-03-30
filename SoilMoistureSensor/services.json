@@ -50,8 +50,7 @@
       "Name"
     ],
     "RequiredCharacteristics": [
-      "CurrentLuxLevel",
-      "CurrentAmbientLightLevel"
+      "LightLevel"
     ],
     "UUID": "00000082-0000-1000-8000-0026BB765291"
   },
@@ -62,20 +61,47 @@
       "Name"
     ],
     "RequiredCharacteristics": [
-      "CurrentSoilTemperature"
+      "CurrentTemperature"
     ],
     "UUID": "00000082-0000-1000-8000-0026BB765291"
   },
-  "AirTempAndHumiditySensor": {
+  "TemperatureSensor": {
     "OptionalCharacteristics": [
       "StatusActive",
       "StatusFault",
+      "StatusLowBattery",
+      "StatusTampered",
       "Name"
     ],
     "RequiredCharacteristics": [
-      "CurrentAirHumidity",
-      "CurrentAirTemperature"
+      "CurrentTemperature"
+    ],
+    "UUID": "0000008A-0000-1000-8000-0026BB765291"
+  },
+  "HumiditySensor": {
+    "OptionalCharacteristics": [
+      "StatusActive",
+      "StatusFault",
+      "StatusTampered",
+      "StatusLowBattery",
+      "Name"
+    ],
+    "RequiredCharacteristics": [
+      "CurrentRelativeHumidity"
     ],
     "UUID": "00000082-0000-1000-8000-0026BB765291"
-  }
+  },
+  "LightSensor": {
+      "OptionalCharacteristics": [
+         "Name",
+         "StatusActive",
+         "StatusFault",
+         "StatusTampered",
+         "StatusLowBattery"
+      ],
+      "RequiredCharacteristics": [
+         "CurrentAmbientLightLevel"
+      ],
+      "UUID": "00000084-0000-1000-8000-0026BB765291"
+   }
 }

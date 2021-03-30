@@ -6,7 +6,7 @@ from pyhap.loader import Loader
 import resource
 resource.setrlimit(resource.RLIMIT_NOFILE, (65536, 65536))
 
-logging.basicConfig(level=logging.INFO, format="[%(module)s] %(message)s")
+logging.basicConfig(level=logging.DEBUG, format="[%(module)s] %(message)s")
 
 
 def get_bridge(driver):

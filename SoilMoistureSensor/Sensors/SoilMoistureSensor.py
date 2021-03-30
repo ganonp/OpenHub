@@ -29,7 +29,7 @@ class SoilMoistureSensor(Accessory):
         self.add_moisture_service()
 
     def as_json(self):
-        sensor_dict = {"name": self.name, "index": self.index, "aid": self.aid, "serial_no": self.serial_no,
+        sensor_dict = {"index": self.index, "aid": self.aid, "serial_no": self.serial_no,
                        "m": self.m, "b": self.b,
                        "max_voltage": self.max_voltage, "min_voltage": self.min_voltage,
                        "display_name": self.display_name}
