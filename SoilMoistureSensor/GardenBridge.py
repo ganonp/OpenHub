@@ -3,17 +3,17 @@ import logging
 import os
 import json
 import uuid
-from SoilMoistureSensor.Sensors import SoilMoistureSensor
-from SoilMoistureSensor.HardwareInterfaces import MCPInterface as mcpi
+from Sensors import SoilMoistureSensor
+from HardwareInterfaces import MCPInterface as mcpi
 
 from pyhap.const import CATEGORY_SENSOR
 from pyhap.accessory import Bridge
 from pyhap.accessory import Accessory
 from pyhap.const import STANDALONE_AID
 
-from SoilMoistureSensor.Sensors.AirTemperatureHumiditySensor import AirTemperatureHumiditySensor
-from SoilMoistureSensor.Sensors.LightSensor import LightSensor
-from SoilMoistureSensor.Sensors.SoilTemperatureSensor import SoilTemperatureSensor
+from Sensors.AirTemperatureHumiditySensor import AirTemperatureHumiditySensor
+from Sensors.LightSensor import LightSensor
+from Sensors.SoilTemperatureSensor import SoilTemperatureSensor
 
 
 class GardenBridge(Bridge):
