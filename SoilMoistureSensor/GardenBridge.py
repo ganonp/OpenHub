@@ -11,6 +11,10 @@ from pyhap.accessory import Bridge
 from pyhap.accessory import Accessory
 from pyhap.const import STANDALONE_AID
 
+from SoilMoistureSensor.Sensors.AirTemperatureHumiditySensor import AirTemperatureHumiditySensor
+from SoilMoistureSensor.Sensors.LightSensor import LightSensor
+from SoilMoistureSensor.Sensors.SoilTemperatureSensor import SoilTemperatureSensor
+
 
 class GardenBridge(Bridge):
     category = CATEGORY_SENSOR
@@ -61,11 +65,37 @@ class GardenBridge(Bridge):
 
     def configure_sensors_from_local(self):
         sensor_configs = self.config["sensors"]
-        for index in sensor_configs.keys():
-            sensor_config = sensor_configs[index]
-            soil_moisture_sensor = SoilMoistureSensor(self.driver, data=sensor_config)
-            self.add_accessory(soil_moisture_sensor)
-            self.garden_sensors[index] = soil_moisture_sensor
+        self.setup_soil_moisture_sensors_from_local(sensor_configs)
+        self.setup_air_temp_humidity_from_local(sensor_configs)
+        self.setup_soil_temperature_sensor_from_local(sensor_configs)
+        self.setup_light_level_sensor_from_local(sensor_configs)
+
+    def setup_soil_moisture_sensors_from_local(self, sensor_configs):
+        if "soil_moisture_sensor_configs" in sensor_configs.keys():
+            soil_moisture_sensor_configs = sensor_configs["soil_moisture_sensors"]
+            for index in soil_moisture_sensor_configs.keys():
+                sensor_config = sensor_configs[index]
+                soil_moisture_sensor = SoilMoistureSensor(self.driver, data=sensor_config)
+                self.add_accessory(soil_moisture_sensor)
+                self.garden_sensors[index] = soil_moisture_sensor
+
+    def setup_light_level_sensor_from_local(self, sensor_configs):
+        if "light_level_sensor" in sensor_configs.keys():
+            light_level_sensor_config = sensor_configs["light_level_sensor"]
+            light_level_sensor = LightSensor(self.driver, data=light_level_sensor_config)
+            self.add_accessory(light_level_sensor)
+
+    def setup_soil_temperature_sensor_from_local(self, sensor_configs):
+        if "soil_temperature_sensor" in sensor_configs.keys():
+            soil_temperature_sensor_config = sensor_configs["soil_temperature_sensor"]
+            soil_temperature_sensor = LightSensor(self.driver, data=soil_temperature_sensor_config)
+            self.add_accessory(soil_temperature_sensor)
+
+    def setup_air_temp_humidity_from_local(self, sensor_configs):
+        if "air_temperature_humidity_sensor" in sensor_configs.keys():
+            air_temperature_humidity_sensor_config = sensor_configs["air_temperature_humidity_sensor"]
+            air_temperature_humidity_sensor = LightSensor(self.driver, data=air_temperature_humidity_sensor_config)
+            self.add_accessory(air_temperature_humidity_sensor)
 
     def configure_hub_first_time(self):
         self.add_name()
@@ -104,6 +134,33 @@ class GardenBridge(Bridge):
             self.display_name = input("Please Add Display Name for Garden Hub. ") or "GardenHubDisplayName"
 
     def configure_sensors_first_time(self):
+        self.setup_soil_moisture_sensors_first_time()
+        self.setup_light_sensor_first_time()
+        self.setup_soil_temperature_sensor_first_time()
+        self.setup_air_temp_humidity_sensor_first_time()
+
+    def setup_light_sensor_first_time(self):
+        if self.light_level_present:
+            id = str(uuid.uuid4())
+            sensor_config = {"serial_no": id}
+            light_level_sensor = LightSensor(self.driver, data=sensor_config)
+            self.add_accessory(light_level_sensor)
+
+    def setup_air_temp_humidity_sensor_first_time(self):
+        if self.air_temp_hum_present:
+            id = str(uuid.uuid4())
+            sensor_config = {"serial_no": id}
+            air_temp_humidity_sensor = AirTemperatureHumiditySensor(self.driver, data=sensor_config)
+            self.add_accessory(air_temp_humidity_sensor)
+
+    def setup_soil_temperature_sensor_first_time(self):
+        if self.soil_temp_present:
+            id = str(uuid.uuid4())
+            sensor_config = {"serial_no": id}
+            soil_temp_sensor = SoilTemperatureSensor(self.driver, data=sensor_config)
+            self.add_accessory(soil_temp_sensor)
+
+    def setup_soil_moisture_sensors_first_time(self):
         for ind in range(self.num_sensors):
             id = str(uuid.uuid4())
             sensor_config = {"serial_no": id, "index": ind}
