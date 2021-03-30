@@ -1,19 +1,19 @@
 {
   "AccessoryInformation": {
-      "OptionalCharacteristics": [
-         "HardwareRevision",
-         "AccessoryFlags"
-      ],
-      "RequiredCharacteristics": [
-         "Identify",
-         "Manufacturer",
-         "Model",
-         "Name",
-         "SerialNumber",
-         "FirmwareRevision"
-      ],
-      "UUID": "0000003E-0000-1000-8000-0026BB765291"
-   },
+    "OptionalCharacteristics": [
+      "HardwareRevision",
+      "AccessoryFlags"
+    ],
+    "RequiredCharacteristics": [
+      "Identify",
+      "Manufacturer",
+      "Model",
+      "Name",
+      "SerialNumber",
+      "FirmwareRevision"
+    ],
+    "UUID": "0000003E-0000-1000-8000-0026BB765291"
+  },
   "GardenHub": {
     "OptionalCharacteristics": [
       "StatusActive",
@@ -21,10 +21,10 @@
       "Name",
       "NumberSensors"
     ],
-      "RequiredCharacteristics": [
-         "IsConfigured"
-      ],
-      "UUID": "0000003E-0000-1000-8000-0026BB765291"
+    "RequiredCharacteristics": [
+      "IsConfigured"
+    ],
+    "UUID": "0000003E-0000-1000-8000-0026BB765291"
   },
   "SoilMoistureSensor": {
     "OptionalCharacteristics": [
@@ -47,7 +47,7 @@
     "OptionalCharacteristics": [
       "StatusActive",
       "StatusFault",
-      "Name",
+      "Name"
     ],
     "RequiredCharacteristics": [
       "CurrentLuxLevel",
@@ -59,12 +59,23 @@
     "OptionalCharacteristics": [
       "StatusActive",
       "StatusFault",
-      "Name",
+      "Name"
     ],
     "RequiredCharacteristics": [
-      "CurrentSoilTemperature",
+      "CurrentSoilTemperature"
+    ],
+    "UUID": "00000082-0000-1000-8000-0026BB765291"
+  },
+  "AirTempAndHumiditySensor": {
+    "OptionalCharacteristics": [
+      "StatusActive",
+      "StatusFault",
+      "Name"
+    ],
+    "RequiredCharacteristics": [
+      "CurrentAirHumidity",
+      "CurrentAirTemperature"
     ],
     "UUID": "00000082-0000-1000-8000-0026BB765291"
   }
-
 }

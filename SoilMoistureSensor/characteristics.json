@@ -151,5 +151,38 @@
          "Celsius": 0,
          "Fahrenheit": 1
       }
-   }
+   },
+  "CurrentAirTemperature": {
+      "Format": "uint8",
+      "Permissions": [
+         "pr",
+         "pw",
+         "ev"
+      ],
+      "UUID": "00000036-0000-1000-8000-0026BB765291",
+      "ValidValues": {
+         "Celsius": 0,
+         "Fahrenheit": 1
+      }
+   },
+  "CurrentAirHumidity": {
+    "Format": "float",
+    "Permissions": [
+      "pr",
+      "ev"
+    ],
+    "UUID": "00000010-0000-1000-8000-0026BB765291",
+    "maxValue": 100,
+    "minStep": 1,
+    "minValue": 0,
+    "unit": "percentage"
+  },
+  "Slope": {
+    "Format": "float",
+    "Permissions": [
+      "pr",
+      "ev"
+    ],
+    "UUID": "00000010-0000-1000-8000-0026BB765291"
+  }
 }
