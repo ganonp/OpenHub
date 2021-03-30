@@ -1,4 +1,3 @@
-import time
 import logging
 import DHTInterface as dhti
 from pyhap.accessory import Accessory
