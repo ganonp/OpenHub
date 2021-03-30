@@ -25,6 +25,11 @@ class GardenBridge(Bridge):
 
     serial_no = None
 
+    air_temp_hum_present = False
+    soil_temp_present = False
+    light_level_present = False
+    soil_moisture_present = False
+
     def __init__(self, driver, **kwargs):
         self.configure_hub()
         super().__init__(driver, self.display_name)
@@ -64,11 +69,35 @@ class GardenBridge(Bridge):
 
     def configure_hub_first_time(self):
         self.add_name()
-        self.num_sensors = int(input("How many sensors? "))
-        self.config["num_sensors"] = self.num_sensors
+        self.configure_soil_moisture_sensors()
+        self.configure_air_temp_humidity()
+        self.configure_soil_temp()
+        self.configure_light_level()
         self.serial_no = str(uuid.uuid4())
         self.config["serial_no"] = self.serial_no
         self.config["display_name"] = self.display_name
+
+    def configure_light_level(self):
+        self.light_level_present = str(input("Is a level sensor connected?")).lower() == "yes"
+        self.config["light_level_present"] = self.light_level_present
+
+    def configure_soil_temp(self):
+        self.soil_temp_present = str(input("Is a soil temperature sensor connected?")).lower() == "yes"
+        self.config["soil_temp_present"] = self.soil_temp_present
+
+    def configure_air_temp_humidity(self):
+        self.air_temp_hum_present = str(input("Is an air temperature/humidity sensor connected?")).lower() == "yes"
+        self.config["air_temp_hum_present"] = self.air_temp_hum_present
+
+    def configure_soil_moisture_sensors(self):
+        self.soil_moisture_present = str(input("Are soil moisture sensors connected?")).lower() == "yes"
+
+        if self.soil_moisture_present:
+            self.num_sensors = int(input("How many sensors? "))
+        else:
+            self.num_sensors = 0
+        self.config["num_sensors"] = self.num_sensors
+        self.config["soil_moisture_present"] = self.soil_moisture_present
 
     def add_name(self):
         if self.display_name is None:
