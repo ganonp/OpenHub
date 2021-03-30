@@ -138,5 +138,18 @@
       "maxValue": 100000,
       "minValue": 0.0001,
       "unit": "lux"
+   },
+  "CurrentSoilTemperature": {
+      "Format": "uint8",
+      "Permissions": [
+         "pr",
+         "pw",
+         "ev"
+      ],
+      "UUID": "00000036-0000-1000-8000-0026BB765291",
+      "ValidValues": {
+         "Celsius": 0,
+         "Fahrenheit": 1
+      }
    }
 }
