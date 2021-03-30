@@ -68,7 +68,7 @@ class SoilMoistureSensor(Accessory):
     def add_name(self):
         if self.display_name is None:
             self.display_name = input(
-                "Please Add Display Name for Sensor on Channel " + str(self.index)) or "SoilMoistureDisplayName" + str(
+                "Please Add Display Name for Sensor on Channel: " + str(self.index)) or "SoilMoistureDisplayName" + str(
                 self.index)
 
     def calibrate(self):
