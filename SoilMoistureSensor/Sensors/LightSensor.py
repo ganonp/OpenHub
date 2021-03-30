@@ -1,7 +1,7 @@
 from pyhap.const import CATEGORY_SENSOR
 from pyhap.accessory import Accessory
 import logging
-import VEMLInterface as veml
+import HardwareInterfaces.VEMLInterface as veml
 
 
 class LightSensor(Accessory):

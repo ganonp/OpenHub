@@ -3,8 +3,8 @@ import logging
 import os
 import json
 import uuid
-from SoilMoistureSensor import SoilMoistureSensor
-import MCPInterface as mcpi
+from SoilMoistureSensor.Sensors import SoilMoistureSensor
+from SoilMoistureSensor.HardwareInterfaces import MCPInterface as mcpi
 
 from pyhap.const import CATEGORY_SENSOR
 from pyhap.accessory import Bridge
@@ -65,8 +65,8 @@ class GardenBridge(Bridge):
     def configure_hub_first_time(self):
         self.add_name()
         self.num_sensors = int(input("How many sensors? "))
-        self.serial_no = str(uuid.uuid4())
         self.config["num_sensors"] = self.num_sensors
+        self.serial_no = str(uuid.uuid4())
         self.config["serial_no"] = self.serial_no
         self.config["display_name"] = self.display_name
 

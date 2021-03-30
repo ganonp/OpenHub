@@ -3,7 +3,7 @@ from pyhap.accessory import Accessory
 import time
 import Utilities
 import logging
-import MCPInterface as mcpi
+import HardwareInterfaces.MCPInterface as mcpi
 
 
 class SoilMoistureSensor(Accessory):

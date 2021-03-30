@@ -1,22 +1,25 @@
-from pyhap.const import CATEGORY_SENSOR
-from pyhap.accessory import Accessory
 import logging
-import ModProbeInterface as modProbe
+import HardwareInterfaces.DHTInterface as dhti
+from pyhap.accessory import Accessory
+from pyhap.const import CATEGORY_SENSOR
 
 
-class SoilTemperatureSensor(Accessory):
+class AirTemperatureHumiditySensor(Accessory):
     logger = logging.getLogger(__name__)
     index = None
-    soil_temp_service = None
-    char_current_soil_temp = None
+    channel = None
+    air_temp_hum_service = None
+    char_temp = None
+    char_hum = None
     category = CATEGORY_SENSOR
     serial_no = None
+    name = None
     display_name = None
 
     def __init__(self, driver, **kwargs):
         self.from_json(kwargs["data"])
         super().__init__(driver, self.display_name)
-        self.add_soil_temperature_service()
+        self.add_air_temp_hum_service()
 
     def as_json(self):
         sensor_dict = {"name": self.name, "index": self.index, "aid": self.aid, "serial_no": self.serial_no,
@@ -42,13 +45,19 @@ class SoilTemperatureSensor(Accessory):
         serv_info.configure_char("Name", value=self.display_name)
         serv_info.configure_char("SerialNumber", value=self.serial_no)
         serv_info.configure_char("Manufacturer", value="BellyFrito")
-        serv_info.configure_char("Model", value="SoilMoistureSensor")
+        serv_info.configure_char("Model", value="AirTempAndHumiditySensor")
         self.add_service(serv_info)
 
-    def add_soil_temperature_service(self):
+    def add_air_temp_hum_service(self):
 
-        self.soil_temp_service = self.add_preload_service("SoilTemperatureSensor")
-        self.char_current_soil_temp = self.soil_temp_service.configure_char("CurrentSoilTemperature")
+        self.air_temp_hum_service = self.add_preload_service("AirTempAndHumiditySensor")
+        self.char_hum = self.air_temp_hum_service.configure_char("CurrentAirHumidity")
+        self.char_temp = self.air_temp_hum_service.configure_char("CurrentAirTemperature")
 
     async def run(self):
-        self.char_current_soil_temp.set_value(modProbe.read_temp_f())
+        temperature_f = dhti.get_temp_f()
+        humidity = dhti.get_humidity()
+        self.char_temp.set_value(temperature_f)
+        self.char_hum.set_value(temperature_f)
+        self.logger.debug("Current Air Temp(F): " + str(temperature_f))
+        self.logger.debug("Current Humidity: " + str(humidity))
