@@ -68,7 +68,9 @@ class AirTemperatureHumiditySensor(Accessory):
     async def run(self):
         temperature_f = dhti.get_temp_c()
         humidity = dhti.get_humidity()
-        self.char_temp.set_value(temperature_f)
-        self.char_hum.set_value(humidity)
+        if temperature_f is not None:
+            self.char_temp.set_value(temperature_f)
+        if humidity is not None:
+            self.char_hum.set_value(humidity)
         self.logger.debug("Current Air Temp(F): " + str(temperature_f))
         self.logger.debug("Current Humidity: " + str(humidity))
