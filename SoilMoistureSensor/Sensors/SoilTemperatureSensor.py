@@ -31,8 +31,7 @@ class SoilTemperatureSensor(Accessory):
             self.serial_no = data["serial_no"]
         if "index" in data.keys():
             self.index = data["index"]
-        if "name" in data.keys():
-            self.name = data["name"]
+
         if "aid" in data.keys():
             self.aid = data["aid"]
         if "display_name" in data.keys():
@@ -53,4 +52,7 @@ class SoilTemperatureSensor(Accessory):
         self.char_current_soil_temp = self.soil_temp_service.configure_char("CurrentTemperature")
 
     async def run(self):
-        self.char_current_soil_temp.set_value(modProbe.read_temp_c())
+        try:
+            self.char_current_soil_temp.set_value(modProbe.read_temp_c())
+        except IndexError as e:
+            self.logger.warning(str(e))
