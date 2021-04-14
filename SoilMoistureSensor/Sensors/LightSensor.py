@@ -61,6 +61,6 @@ class LightSensor(Accessory):
     async def run(self):
         light = veml.veml7700.light
         lux = veml.veml7700.lux
-        self.char_ambient.set_value(light)
+        self.char_ambient.set_value(lux)
         self.logger.debug("Current light: " + str(light))
         self.logger.debug("Current lux: " + str(lux))
