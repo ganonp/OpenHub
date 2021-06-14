@@ -26,6 +26,18 @@
     ],
     "UUID": "0000003E-0000-1000-8000-0026BB765291"
   },
+  "OpenHub": {
+    "OptionalCharacteristics": [
+      "StatusActive",
+      "StatusFault",
+      "Name",
+      "NumberSensors"
+    ],
+    "RequiredCharacteristics": [
+      "IsConfigured"
+    ],
+    "UUID": "0000003E-0000-1000-8000-0026BB765292"
+  },
   "SoilMoistureSensor": {
     "OptionalCharacteristics": [
       "StatusActive",
@@ -91,17 +103,49 @@
     ],
     "UUID": "00000082-0000-1000-8000-0026BB765291"
   },
+  "PressureSensor": {
+    "OptionalCharacteristics": [
+      "StatusActive",
+      "StatusFault",
+      "StatusTampered",
+      "StatusLowBattery",
+      "Name"
+    ],
+    "RequiredCharacteristics": [
+      "Pressure"
+    ],
+    "UUID": "00000082-0000-1000-8000-0026BB765291"
+  },
   "LightSensor": {
+    "OptionalCharacteristics": [
+      "Name",
+      "StatusActive",
+      "StatusFault",
+      "StatusTampered",
+      "StatusLowBattery"
+    ],
+    "RequiredCharacteristics": [
+      "CurrentAmbientLightLevel"
+    ],
+    "UUID": "00000084-0000-1000-8000-0026BB765291"
+  },
+  "Pump": {
+    "RequiredCharacteristics": [
+      "On"
+    ],
+    "UUID": "00000043-0000-1000-8000-0026BB765291"
+  },
+  "LiquidLevelSensor": {
       "OptionalCharacteristics": [
-         "Name",
-         "StatusActive",
-         "StatusFault",
-         "StatusTampered",
-         "StatusLowBattery"
-      ],
-      "RequiredCharacteristics": [
-         "CurrentAmbientLightLevel"
-      ],
-      "UUID": "00000084-0000-1000-8000-0026BB765291"
-   }
+      "StatusActive",
+      "StatusFault",
+      "StatusTampered",
+      "StatusLowBattery",
+      "Name"
+    ],
+    "RequiredCharacteristics": [
+      "Pressure"
+    ],
+    "UUID": "00000043-0000-1000-8000-0026BB765291"
+  }
 }

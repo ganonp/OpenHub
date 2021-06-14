@@ -1,0 +1,57 @@
+{
+  "num_sensors": 3,
+  "soil_moisture_present": true,
+  "air_temp_hum_present": false,
+  "soil_temp_present": true,
+  "light_level_present": true,
+  "serial_no": "38362a7f-ff8b-489d-a7ab-189296222abc",
+  "display_name": "CyrilFigTreeGardenHub",
+  "sensors": {
+    "soil_moisture_sensors": {
+      "0": {
+        "name": null,
+        "index": 0,
+        "aid": 2,
+        "serial_no": "38fd0be7-d503-4ffa-a3d2-c1a1e2228abd",
+        "m": 205.71421638933694,
+        "b": -92.36738161559873,
+        "max_voltage": 2.226889448386358,
+        "min_voltage": 1.0699382009613183,
+        "display_name": "CyrilFigTreeGardenHubSoilMoisture0"
+      },
+      "1": {
+        "name": null,
+        "index": 1,
+        "aid": 3,
+        "serial_no": "d83c1f57-4fc1-40c9-8160-ed82222adba5",
+        "m": 205.71421638933694,
+        "b": -92.36738161559873,
+        "max_voltage": 2.226889448386358,
+        "min_voltage": 1.0699382009613183,
+        "display_name": "CyrilFigTreeGardenHubSoilMoisture1"
+      },
+      "2": {
+        "name": null,
+        "index": 2,
+        "aid": 4,
+        "serial_no": "96038902-c269-41c1-9626-ada4222bbc40",
+        "m": 205.71421638933694,
+        "b": -92.36738161559873,
+        "max_voltage": 2.226889448386358,
+        "min_voltage": 1.0699382009613183,
+        "display_name": "CyrilFigTreeGardenHubSoilMoisture2"
+      }
+    },
+    "soil_temp_sensor": {
+      "aid": 5,
+      "serial_no": "88d07b1d-d852-4ade-a983-7618ff2f2220",
+      "display_name": "CyrilFigTreeGardenHubSoilTemperature"
+    },
+    "light_level_sensor": {
+      "aid": 6,
+      "serial_no": "43194638-1216-4a00-b7ec-f0daaab334d0",
+      "display_name": "CyrilFigTreeGardenHubGardenHubLightSensor"
+    }
+  },
+  "aid": 1
+}

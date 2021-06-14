@@ -159,40 +159,66 @@
     "minValue": 0,
     "unit": "percentage"
   },
-
   "CurrentTemperature": {
-      "Format": "float",
-      "Permissions": [
-         "pr",
-         "ev"
-      ],
-      "UUID": "00000011-0000-1000-8000-0026BB765291",
-      "maxValue": 1000,
-      "minStep": 0.1,
-      "minValue": -273.1,
-      "unit": "celsius"
-   },
+    "Format": "float",
+    "Permissions": [
+      "pr",
+      "ev"
+    ],
+    "UUID": "00000011-0000-1000-8000-0026BB765291",
+    "maxValue": 1000,
+    "minStep": 0.1,
+    "minValue": -273.1,
+    "unit": "celsius"
+  },
   "CurrentRelativeHumidity": {
-      "Format": "float",
-      "Permissions": [
-         "pr",
-         "ev"
-      ],
-      "UUID": "00000010-0000-1000-8000-0026BB765291",
-      "maxValue": 100,
-      "minStep": 1,
-      "minValue": 0,
-      "unit": "percentage"
-   },
+    "Format": "float",
+    "Permissions": [
+      "pr",
+      "ev"
+    ],
+    "UUID": "00000010-0000-1000-8000-0026BB765291",
+    "maxValue": 100,
+    "minStep": 1,
+    "minValue": 0,
+    "unit": "percentage"
+  },
+  "Pressure": {
+    "Format": "float",
+    "Permissions": [
+      "pr",
+      "ev"
+    ],
+    "UUID": "00000010-0000-1000-8000-0026BB765291",
+    "unit": "mbar"
+  },
   "CurrentAmbientLightLevel": {
-      "Format": "float",
-      "Permissions": [
-         "pr",
-         "ev"
-      ],
-      "UUID": "0000006B-0000-1000-8000-0026BB765291",
-      "maxValue": 100000,
-      "minValue": 0.0001,
-      "unit": "lux"
-   }
+    "Format": "float",
+    "Permissions": [
+      "pr",
+      "ev"
+    ],
+    "UUID": "0000006B-0000-1000-8000-0026BB765291",
+    "maxValue": 100000,
+    "minValue": 0.0001,
+    "unit": "lux"
+  },
+  "On": {
+    "Format": "bool",
+    "Permissions": [
+      "pr",
+      "pw",
+      "ev"
+    ],
+    "UUID": "00000025-0000-1000-8000-0026BB765291"
+  },
+   "CurrentLiquidLevel": {
+     "Format": "float",
+    "Permissions": [
+      "pr",
+      "ev"
+    ],
+    "UUID": "00000010-0000-1000-8000-0026BB765291",
+    "unit": "mbar"
+  }
 }
