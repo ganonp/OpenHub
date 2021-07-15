@@ -19,9 +19,9 @@ class PiPicoAnalog(ChannelInterface):
         command = "data" + str(self.channel_index)
         try:
             response = await self.pipico.send_command(command)
-            parsed_response = response.decode('utf8').replace("'", '"')
+            parsed_response = response.decode('utf-8').replace("'", '"')
             sensor_response = json.loads(parsed_response)
-        except:
-            self.logger.log(e)
+        except Exception as e:
+            self.logger.log(level=logging.WARN,msg=str(e))
             return {}
         return sensor_response

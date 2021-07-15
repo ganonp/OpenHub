@@ -7,7 +7,7 @@ class PressureSensor(HomeKitSensorInterface):
     run_debug_message = "Current Pressure: "
 
     def __init__(self, serial_no=None, display_name=None, channel_interface_serial_no=None, *args, **kwargs):
-        self.scale = float(((1/5 - 0.1)* 4 / 3)/145.038)
+        self.scale = float((1.2*145.038) /(3.234*65536))
         super().__init__(serial_no=serial_no, display_name=display_name,
                          channel_interface_serial_no=channel_interface_serial_no, *args, **kwargs)
 

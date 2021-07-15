@@ -3,6 +3,8 @@ import signal
 import resource
 import asyncio, socket
 
+from pyhap.accessory_driver import AccessoryDriver
+from pyhap.loader import Loader
 from requests.packages.urllib3.util.retry import Retry
 from serial import Serial
 from serial.tools import list_ports
@@ -12,11 +14,12 @@ import requests
 import json
 
 from OpenHub.calibrators.json import raw_value_decoder
+from OpenHub.config_files import HAP_PYTHON_CHARACTERISTICS_FILE, HAP_PYTHON_SERVICES_FILE, HAP_PYTHON_ACCESSORIES_FILE
 from OpenHub.hardware_interfaces.json import hardware_interface_decoder
 from OpenHub.hardware_interfaces.channels.json.channel_decoder import ChannelDecoder
-from OpenHub.homekit_accessories.json import homekit_decoder
 from OpenHub.globals import id_hardware_map, hardware_id_channels_map, id_channels_map, accessories, driver, \
     hub
+import OpenHub.globals as glob
 
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
@@ -45,28 +48,41 @@ def get_pico_ports():
     return COMs
 
 
-def setup_interrupt_to_acm_mapping(COMS, hardwares):
-    for hardware in hardwares.values():
-        if type(hardware).__name__ == 'PiPico':
-            GPIO.setup(hardware.interrupt, GPIO.OUT)
-            GPIO.output(hardware.interrupt, GPIO.LOW)
+def setup_picos(COMS, hardwares, hardware_id_channels_map):
 
-    for hardware in hardwares.values():
-        if type(hardware).__name__ == 'PiPico':
-            GPIO.output(hardware.interrupt, GPIO.HIGH)
-
+    print('FUCK')
     for ser in COMS:
         command = "init"
         ser.write(command.encode('utf-8'))
-        pico_data = ser.readline()
-        sensor_response = pico_data[:-2]
-        print(sensor_response)
-        pico_config = json.loads(sensor_response.decode('utf8').replace("'", '"'))
-        hardwares[pico_config['serial_no']].set_serial_com(ser)
+        pico_response = ser.readline()
+        pico_serial = pico_response[:-2].decode('utf8').replace("'", '"')
+        print(pico_serial)
+        hardwares[pico_serial].set_serial_com(ser)
 
-    for hardware in hardwares.values():
-        if type(hardware).__name__ == 'PiPico':
-            GPIO.output(hardware.interrupt, GPIO.LOW)
+        channels_temp = []
+
+        for channel in hardware_id_channels_map[pico_serial]:
+            response = requests.get('http://192.168.3.132:8000/channels/' + str(channel.serial_no) + '/io')
+            data = response.json()
+            pico_config_element = {}
+            pico_config_element['serial_no'] = channel.serial_no
+            for datum in data:
+                if 'label' in datum.keys() and datum['label'] is not None and 'pin' in datum.keys():
+                    pico_config_element[datum['label']] = str(datum['pin'])
+                pico_config_element = {**pico_config_element, **datum}
+            from OpenHub.hardware_interfaces.channels.pi_pico_analog import PiPicoAnalog
+            if channel.__class__.__name__ == PiPicoAnalog.__name__:
+                pico_config_element['type'] = 'sensor'
+            else:
+                pico_config_element['type'] = 'pump'
+            pico_config_element['index'] = str(channel.channel_index)
+            channels_temp.append(pico_config_element)
+
+        pico_config = {'serial_no': pico_serial, 'no_channels': str(len(channels_temp)), 'channels': channels_temp}
+        print((json.dumps(pico_config)))
+        ser.write((json.dumps(pico_config) + '\n').encode())
+
+
 
 
 def _gpio_setup(_cls, pin):
@@ -76,6 +92,8 @@ def _gpio_setup(_cls, pin):
 
 
 def load_hub_config(hub):
+    from OpenHub.homekit_accessories.json import homekit_decoder
+
     serial_no = 'efe3fcf0-6064-434f-9cf3-92098bba74ce'
     response = http.get('http://192.168.3.132:8000/hubs/' + serial_no)
     data = json.dumps(response.json())
@@ -85,7 +103,7 @@ def load_hub_config(hub):
 
 
 def load_hardware_config(hardware):
-    response = requests.get('http://192.168.3.132:8000/hardwares')
+    response = http.get('http://192.168.3.132:8000/hardwares')
     data = json.dumps(response.json())
     hardware_temp = json.loads(data, cls=hardware_interface_decoder.HardwareDecoder)
     for hard_t in hardware_temp:
@@ -109,6 +127,8 @@ def load_channels(channels, id_channels_map):
 
 
 def load_homekit_accessory_config(accessories):
+    from OpenHub.homekit_accessories.json import homekit_decoder
+
     response = requests.get('http://192.168.3.132:8000/accessories')
     data = json.dumps(response.json())
     accessories_temp = json.loads(data, cls=homekit_decoder.HomekitDecoder)
@@ -120,7 +140,7 @@ def load_homekit_accessory_config(accessories):
 def setup_accessories(hub, accessories):
     for accessory in accessories.values():
         hub.add_accessory(accessory)
-    driver.add_accessory(accessory=hub)
+    glob.driver.add_accessory(accessory=hub)
 
     # driver.add_accessory(accessory)
 
@@ -130,17 +150,13 @@ def setup_accessories(hub, accessories):
 #     global calibration
 #     calibration = json.loads(str(data), cls=raw_value_decoder.RawValueDecoder)
 
-hub = load_hub_config(hub)
 id_hardware_map = load_hardware_config(id_hardware_map)
 
-COMS = get_pico_ports()
-setup_interrupt_to_acm_mapping(COMS, id_hardware_map)
-
 hardware_id_channels_map, id_channels_map = load_channels(hardware_id_channels_map, id_channels_map)
-accessories = load_homekit_accessory_config(accessories)
-setup_accessories(hub, accessories)
 
-resource.setrlimit(resource.RLIMIT_NOFILE, (65536, 65536))
+COMS = get_pico_ports()
+setup_picos(COMS, id_hardware_map, hardware_id_channels_map)
+
 
 
 async def handle_client(reader, writer):
@@ -170,6 +186,19 @@ async def run_server():
 #     return bridge
 #
 #
-signal.signal(signal.SIGTERM, driver.signal_handler)
+glob.loader = Loader(path_char=HAP_PYTHON_CHARACTERISTICS_FILE,
+                path_service=HAP_PYTHON_SERVICES_FILE)
 
-driver.start()
+glob.driver = AccessoryDriver(port=51826, persist_file=HAP_PYTHON_ACCESSORIES_FILE,
+                         loader=glob.loader)
+
+hub = load_hub_config(hub)
+
+accessories = load_homekit_accessory_config(accessories)
+setup_accessories(hub, accessories)
+
+resource.setrlimit(resource.RLIMIT_NOFILE, (65536, 65536))
+
+signal.signal(signal.SIGTERM, glob.driver.signal_handler)
+
+glob.driver.start()

@@ -46,12 +46,10 @@ class PiPico(HardwareInterface):
         await self.lock.acquire()
         try:
             self.serial.flush()
-            GPIO.output(self.interrupt, GPIO.HIGH)
             self.serial.write(command.encode('utf-8'))
             pico_data = self.serial.readline()
             sensor_response = pico_data[:-2]
             logger.info(sensor_response)
-            GPIO.output(self.interrupt, GPIO.LOW)
             self.serial.flush()
         finally:
             self.lock.release()

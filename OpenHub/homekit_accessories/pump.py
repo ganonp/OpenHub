@@ -1,3 +1,5 @@
+import asyncio
+
 from Adafruit_GPIO import GPIO
 from OpenHub.homekit_accessories.homkit_sensor_interface import HomeKitSensorInterface
 import logging
@@ -33,13 +35,14 @@ class Pump(HomeKitSensorInterface):
         # self._gpio_setup(self.pin)
 
     def set_pump(self, value):
+        loop = asyncio.get_running_loop()
         if value:
-            self.channel.turn_on()
+            loop.create_task(self.channel.turn_on())
         else:
-            self.channel.turn_off()
+            loop.create_task(self.channel.turn_off())
 
     async def stop(self):
-        self.channel.turn_off()
+        await self.channel.turn_off()
         await super().stop()
 
     async def run(self):
