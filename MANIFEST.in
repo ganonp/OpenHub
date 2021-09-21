@@ -1,0 +1,3 @@
+include src/OpenHub/characteristics.json
+include src/OpenHub/services.json
+include src/OpenHub/install/install.sh

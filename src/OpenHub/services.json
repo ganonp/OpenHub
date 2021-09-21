@@ -1,0 +1,199 @@
+{
+   "AirQualitySensor": {
+      "OptionalCharacteristics": [
+         "StatusActive",
+         "StatusFault",
+         "StatusTampered",
+         "StatusLowBattery",
+         "Name",
+         "PM2.5Density",
+         "PM10Density",
+         "VOCDensity",
+         "CarbonMonoxideLevel",
+         "CarbonDioxideLevel"
+      ],
+      "RequiredCharacteristics": [
+         "AirQuality"
+      ],
+      "UUID": "0000008D-0000-1000-8000-0026BB765291"
+   },
+  "AccessoryInformation": {
+    "OptionalCharacteristics": [
+      "HardwareRevision",
+      "AccessoryFlags"
+    ],
+    "RequiredCharacteristics": [
+      "Identify",
+      "Manufacturer",
+      "Model",
+      "Name",
+      "SerialNumber",
+      "FirmwareRevision"
+    ],
+    "UUID": "0000003E-0000-1000-8000-0026BB765291"
+  },
+  "GardenHub": {
+    "OptionalCharacteristics": [
+      "StatusActive",
+      "StatusFault",
+      "Name",
+      "NumberSensors"
+    ],
+    "RequiredCharacteristics": [
+      "IsConfigured"
+    ],
+    "UUID": "0000003E-0000-1000-8000-0026BB765291"
+  },
+  "OpenHub": {
+    "OptionalCharacteristics": [
+      "StatusActive",
+      "StatusFault",
+      "Name",
+      "NumberSensors"
+    ],
+    "RequiredCharacteristics": [
+      "IsConfigured"
+    ],
+    "UUID": "0000003E-0000-1000-8000-0026BB765292"
+  },
+  "SoilMoistureSensor": {
+    "OptionalCharacteristics": [
+      "StatusActive",
+      "IsConfigured",
+      "Channel",
+      "StatusFault",
+      "Name",
+      "Slope",
+      "Intercept",
+      "MaxVoltage",
+      "MinVoltage"
+    ],
+    "RequiredCharacteristics": [
+      "SoilMoisture"
+    ],
+    "UUID": "00000082-0000-1000-8000-0026BB765291"
+  },
+  "LightLevelSensor": {
+    "OptionalCharacteristics": [
+      "StatusActive",
+      "StatusFault",
+      "Name"
+    ],
+    "RequiredCharacteristics": [
+      "LightLevel"
+    ],
+    "UUID": "00000082-0000-1000-8000-0026BB765291"
+  },
+  "SoilTemperatureSensor": {
+    "OptionalCharacteristics": [
+      "StatusActive",
+      "StatusFault",
+      "Name"
+    ],
+    "RequiredCharacteristics": [
+      "CurrentTemperature"
+    ],
+    "UUID": "00000082-0000-1000-8000-0026BB765291"
+  },
+  "TemperatureSensor": {
+    "OptionalCharacteristics": [
+      "StatusActive",
+      "StatusFault",
+      "StatusLowBattery",
+      "StatusTampered",
+      "Name"
+    ],
+    "RequiredCharacteristics": [
+      "CurrentTemperature"
+    ],
+    "UUID": "0000008A-0000-1000-8000-0026BB765291"
+  },
+  "HumiditySensor": {
+    "OptionalCharacteristics": [
+      "StatusActive",
+      "StatusFault",
+      "StatusTampered",
+      "StatusLowBattery",
+      "Name"
+    ],
+    "RequiredCharacteristics": [
+      "CurrentRelativeHumidity"
+    ],
+    "UUID": "00000082-0000-1000-8000-0026BB765291"
+  },
+  "PressureSensor": {
+    "OptionalCharacteristics": [
+      "StatusActive",
+      "StatusFault",
+      "StatusTampered",
+      "StatusLowBattery",
+      "Name"
+    ],
+    "RequiredCharacteristics": [
+      "Pressure"
+    ],
+    "UUID": "00000082-0000-1000-8000-0026BB765291"
+  },
+  "LightSensor": {
+    "OptionalCharacteristics": [
+      "Name",
+      "StatusActive",
+      "StatusFault",
+      "StatusTampered",
+      "StatusLowBattery"
+    ],
+    "RequiredCharacteristics": [
+      "CurrentAmbientLightLevel"
+    ],
+    "UUID": "00000084-0000-1000-8000-0026BB765291"
+  },
+  "Pump": {
+    "RequiredCharacteristics": [
+      "On"
+    ],
+    "UUID": "00000043-0000-1000-8000-0026BB765291"
+  },
+  "Relay": {
+    "RequiredCharacteristics": [
+      "On"
+    ],
+    "UUID": "00000043-0000-1000-8000-0026BB765291"
+  },
+  "LiquidLevelSensor": {
+      "OptionalCharacteristics": [
+      "StatusActive",
+      "StatusFault",
+      "StatusTampered",
+      "StatusLowBattery",
+      "Name"
+    ],
+    "RequiredCharacteristics": [
+      "Pressure"
+    ],
+    "UUID": "00000043-0000-1000-8000-0026BB765291"
+  },
+     "Microphone": {
+      "OptionalCharacteristics": [
+         "Name"
+      ],
+      "RequiredCharacteristics": [
+         "Volume",
+         "Mute"
+      ],
+      "UUID": "00000112-0000-1000-8000-0026BB765291"
+   },
+  "CameraRTPStreamManagement": {
+      "OptionalCharacteristics": [
+         "Name"
+      ],
+      "RequiredCharacteristics": [
+         "SupportedVideoStreamConfiguration",
+         "SupportedAudioStreamConfiguration",
+         "SupportedRTPConfiguration",
+         "SelectedRTPStreamConfiguration",
+         "StreamingStatus",
+         "SetupEndpoints"
+      ],
+      "UUID": "00000110-0000-1000-8000-0026BB765291"
+   }
+}
