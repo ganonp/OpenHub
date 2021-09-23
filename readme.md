@@ -1,6 +1,6 @@
 # OpenHub
 
-This project builds on HAP-Python. It is meant to allow easy setup and management of many iOT hubs and devices using Raspberry Pi.
+This project builds on [HAP-Python](https://github.com/ikalchev/HAP-python). It is meant to allow easy setup and management of many iOT hubs and devices using Raspberry Pi.
 
 Main features:
 
