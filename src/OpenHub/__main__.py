@@ -166,7 +166,7 @@ def load_hub_config(hub):
 
 
 def load_hardware_config(hardware):
-    response = http.get('http://192.168.3.132:8000/hub/' + hub_serial_no + '/hardwares')
+    response = http.get('http://192.168.3.132:8000/hubs/' + hub_serial_no + '/hardwares', headers={'Accept': 'application/json'})
     data = json.dumps(response.json())
     hardware_temp = json.loads(data, cls=hardware_interface_decoder.HardwareDecoder)
     for hard_t in hardware_temp:
@@ -191,7 +191,7 @@ def load_channels(channels, id_channels_map):
 
 def load_homekit_accessory_config(accessories):
     from OpenHub.homekit_accessories.json import homekit_decoder
-    response = http.get('http://192.168.3.132:8000/hub/' + hub_serial_no + '/accessories')
+    response = http.get('http://192.168.3.132:8000/hubs/' + hub_serial_no + '/accessories',headers={'Accept': 'application/json'})
     data = json.dumps(response.json())
     accessories_temp = json.loads(data, cls=homekit_decoder.HomekitDecoder)
     for accessory in accessories_temp:
