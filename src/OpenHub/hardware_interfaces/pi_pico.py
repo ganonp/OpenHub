@@ -46,7 +46,8 @@ class PiPico(HardwareInterface):
                 self.channels.append(PiPicoRelay(self, ))
 
     async def send_command(self, command, channel=None, state=None):
-        await self.send_command_lock(self, command, channel, state, self.lock)
+        response = await self.send_command_lock(command, channel, state, self.lock)
+        return response
 
     async def send_command_lock(self, command, channel=None, state = None, lock=None):
         command_json = self.build_command_json(command,channel,state)
