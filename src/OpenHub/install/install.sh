@@ -2,6 +2,7 @@
 
 sudo adduser openhubdaemon
 sudo adduser openhubdaemon spi
+sudo adduser openhubdaemon i2c
 sudo adduser openhubdaemon gpio
 sudo usermod -a -G dialout openhubdaemon
 
@@ -13,6 +14,8 @@ cd /home/openhubdaemon
 sudo mkdir OpenHubAPI
 cd OpenHubAPI
 sudo mkdir OpenHubAPI
+
+sudo apt-get install pigpio python-pigpio python3-pigpio
 
 sudo apt install ffmpeg -y
 

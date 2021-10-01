@@ -8,7 +8,6 @@ class SoilTemperatureSensor(HomeKitSensorInterface):
     run_debug_message = "Current Soil Temperature: "
 
     def __init__(self, serial_no=None, display_name=None, channel_interface_serial_no=None, *args, **kwargs):
-        self.from_json(kwargs["data"])
         if self.display_name is None:
             self.display_name = display_name + "SoilTemperature"
         super().__init__(serial_no=serial_no, display_name=display_name,

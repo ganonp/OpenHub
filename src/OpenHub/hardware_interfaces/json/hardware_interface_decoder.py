@@ -24,15 +24,15 @@ class HardwareDecoder(json.JSONDecoder):
 
             hardware = None
             if type == 'DHT22':
-                hardware = DHT22()
+                hardware = DHT22(serial_no=dct['id'])
             if type == 'MCP3008':
-                hardware = MCP3008()
+                hardware = MCP3008(serial_no=dct['id'])
             elif type == 'ModProbe':
                 # hardware = ModProbe(dct['base_dir'],dct['base_dir'],dct['id'])
                 hardware = ModProbe(serial_no=dct['id'])
             elif type == 'PiPico':
                 hardware = PiPico(dct,None)
             elif type == 'VEML7700':
-                hardware = VEML7700()
+                hardware = VEML7700(serial_no=dct['id'])
         return hardware
         # hardware.set_channels(channels)

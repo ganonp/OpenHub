@@ -21,7 +21,6 @@ class LightSensor(HomeKitSensorInterface):
     display_name = None
 
     def __init__(self, serial_no=None, display_name=None, channel_interface_serial_no=None, *args, **kwargs):
-        self.from_json(kwargs["data"])
         if self.display_name is None:
             self.display_name = display_name + "LightSensor"
         super().__init__(serial_no=serial_no, display_name=display_name,
@@ -40,9 +39,3 @@ class LightSensor(HomeKitSensorInterface):
     def add_functional_service_characteristic(self):
         return self.service.get_characteristic('CurrentAmbientLightLevel')
 
-    async def run(self):
-        light = veml.veml7700.light
-        lux = veml.veml7700.lux
-        self.char_ambient.set_value(lux)
-        self.logger.debug("Current light: " + str(light))
-        self.logger.debug("Current lux: " + str(lux))

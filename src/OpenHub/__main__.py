@@ -134,9 +134,12 @@ def setup_picos(COMS, hardwares, hardware_id_channels_map):
                         pico_config_element[datum['label']] = str(datum['pin'])
                     pico_config_element = {**pico_config_element, **datum}
                 from OpenHub.hardware_interfaces.channels.pi_pico_analog import PiPicoAnalog
+                from OpenHub.hardware_interfaces.channels.pi_pico_ac_analog import PiPicoACAnalog
                 from OpenHub.hardware_interfaces.channels.pi_pico_pump import PiPicoPump
                 if channel.__class__.__name__ == PiPicoAnalog.__name__:
                     pico_config_element['type'] = 'sensor'
+                elif channel.__class__.__name__ == PiPicoACAnalog.__name__:
+                    pico_config_element['type'] = 'acsensor'
                 elif channel.__class__.__name__ == PiPicoPump.__name__:
                     pico_config_element['type'] = 'pump'
                 else:

@@ -12,6 +12,7 @@ Main features:
 
 
 ```
+$ sudo apt-get install python3-pip
 $ sudo python3 pip -m install openhub
 $ sudo python3 pip -m OpenHub.install
 ```

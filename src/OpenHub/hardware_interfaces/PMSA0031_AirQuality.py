@@ -29,7 +29,7 @@ class MCP3008(hardware_interface.HardwareInterface):
         i2c = busio.I2C(scl, sda, frequency=100000)
         # Connect to a PM2.5 sensor over I2C
         pm25 = PM25_I2C(i2c, reset_pin)
-        self.type = self.__name__
+        self.type = __name__
         super().__init__(serial_no, channels, *args, **kwargs)
 
     def create_channel(self):

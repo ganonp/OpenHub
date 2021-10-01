@@ -17,7 +17,7 @@ class MCP3008(hardware_interface.HardwareInterface):
         self.cs = digitalio.DigitalInOut(cs_pin)
         self.mcp = MCP.MCP3008(self.spi, self.cs)
         self.num_channels = num_channels
-        self.type = self.__name__
+        self.type = __name__
 
         super().__init__(serial_no, channels, *args, **kwargs)
 

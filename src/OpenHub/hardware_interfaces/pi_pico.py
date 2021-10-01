@@ -25,6 +25,7 @@ class PiPico(HardwareInterface):
 
     def __init__(self, pico_config, channels=None, *args, **kwargs):
         self.config = pico_config
+
         # self.channels_config = pico_config['channels']
         self.serial_no = pico_config['id']
         self.interrupt = pico_config['pi_gpio_interrupt']

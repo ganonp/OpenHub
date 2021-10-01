@@ -2,6 +2,7 @@ from adafruit_mcp3xxx.analog_in import AnalogIn
 from .channel_interface import ChannelInterface
 import logging
 import uuid
+from OpenHub.globals import id_hardware_map
 
 
 class MCP3008Analog(ChannelInterface):
@@ -10,7 +11,7 @@ class MCP3008Analog(ChannelInterface):
     def __init__(self, mcp=None, channel_index=None, hardware_serial_no=None, serial_no=uuid.uuid4(),
                  *args, **kwargs):
         super.__init__(hardware_serial_no)
-        self.type = self.__name__
+        self.type = __name__
         self.analog_in = AnalogIn(mcp, channel_index)
         super().__init__(hardware_serial_no=hardware_serial_no, serial_no=serial_no, *args, **kwargs)
 

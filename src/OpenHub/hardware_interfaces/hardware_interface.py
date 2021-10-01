@@ -10,13 +10,5 @@ class HardwareInterface(ABC):
 
         id_hardware_map[str(self.serial_no)] = self
 
-    @abstractmethod
-    def create_channel(self):
-        pass
 
-    def get_channel(self, channel):
-        return self.channels[channel]
-
-    def set_channels(self, channels):
-        self.channels = channels
 

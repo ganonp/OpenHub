@@ -20,7 +20,6 @@ class HumiditySensor(HomeKitSensorInterface):
     display_name = None
 
     def __init__(self, serial_no=None, display_name=None, channel_interface_serial_no=None, *args, **kwargs):
-        self.from_json(kwargs["data"])
         super().__init__(serial_no=serial_no, display_name=display_name,
                          channel_interface_serial_no=channel_interface_serial_no, *args, **kwargs)
 

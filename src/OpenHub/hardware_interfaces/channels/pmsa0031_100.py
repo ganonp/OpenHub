@@ -7,7 +7,7 @@ class PMSAAirQuality100(ChannelInterface):
 
     def __init__(self, pmsa_airquality=None, hardware_serial_no=None, serial_no=None, *args, **kwargs):
         self.pmsa_airquality = pmsa_airquality
-        self.type = self.__name__
+        self.type = __name__
         super().__init__(hardware_serial_no=hardware_serial_no, serial_no=serial_no, *args, **kwargs)
 
     def get_raw_data(self):

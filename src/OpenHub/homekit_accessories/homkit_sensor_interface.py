@@ -74,3 +74,8 @@ class HomeKitSensorInterface(ABC, Accessory):
                 self.char.set_value(float(data['averaged']))
             else:
                 self.char.set_value(self.scale*float(data['averaged']))
+        elif 'value' in data.keys():
+            if self.scale is None:
+                self.char.set_value(float(data['value']))
+            else:
+                self.char.set_value(self.scale * float(data['value']))
