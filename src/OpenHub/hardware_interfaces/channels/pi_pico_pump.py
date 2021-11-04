@@ -50,4 +50,4 @@ class PiPicoPump(ChannelInterface):
         command = "state"
         channel = str(self.channel_index)
         state = "off"
-        await self.pipico.send_command(command, channel, state,lock)
+        await self.pipico.send_command_lock(command, channel, state,lock)
