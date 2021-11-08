@@ -8,6 +8,7 @@ id_hardware_map = {}
 picos = []
 hardware_id_channels_map = {}
 id_channels_map = {}
+id_stats_map = {}
 calibration = {}
 hub = None
 loader = None

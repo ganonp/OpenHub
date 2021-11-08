@@ -15,7 +15,7 @@ import json
 from .config_files import HAP_PYTHON_CHARACTERISTICS_FILE, HAP_PYTHON_SERVICES_FILE, HAP_PYTHON_ACCESSORIES_FILE
 from .hardware_interfaces.json import hardware_interface_decoder
 from .hardware_interfaces.channels.json.channel_decoder import ChannelDecoder
-from .globals import id_hardware_map, hardware_id_channels_map, id_channels_map, accessories, hub
+from .globals import id_hardware_map, hardware_id_channels_map, id_channels_map, id_stats_map, accessories, hub
 import OpenHub.globals as glob
 
 from requests.adapters import HTTPAdapter
@@ -37,6 +37,7 @@ logging.basicConfig(level=logging.DEBUG, format="[%(module)s] %(message)s")
 import os.path
 
 file_path = '/home/openhubdaemon/openhub_serial.json'
+ip_file_path = '/home/openhubdaemon/api_ip.json'
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +55,18 @@ else:
         json.dump(serial_json, serial_file_json)
 
 def find_openhub_api_on_local_network():
+    if os.path.isfile(ip_file_path):
+        with open(ip_file_path, 'r') as ip_file:
+            ip = ip_file['ip']
+            logger.debug('Trying ip: ' + str(ip))
+            try:
+                response = requests.get('http://' + str(ip) + ':8000/openhubapi/about')
+                if response.ok:
+                    api_ip = ip
+                    return api_ip
+            except:
+                logger.debug('error')
+
     from .ip_resolver import map_network
     ips = map_network()
     logger.info('SERIAL_NUMBER: ' + hub_serial_no)
@@ -64,6 +77,8 @@ def find_openhub_api_on_local_network():
             response = requests.get('http://'+str(ip)+':8000/openhubapi/about')
             if response.ok:
                 api_ip = ip
+                with open(ip_file_path, 'w') as ip_file:
+                    ip_file['ip'] = str(api_ip)
                 return api_ip
         except:
             continue
@@ -177,7 +192,7 @@ def load_hardware_config(hardware):
     return hardware
 
 
-def load_channels(channels, id_channels_map):
+def load_channels(channels, id_channels_map, id_stats_map):
     for hard in id_hardware_map.values():
         response = requests.get('http://192.168.3.132:8000/hardwares/' + str(hard.serial_no) + '/channels')
         data = json.dumps(response.json())
@@ -188,6 +203,9 @@ def load_channels(channels, id_channels_map):
     for hard in id_hardware_map.values():
         for channel in channels[str(hard.serial_no)]:
             id_channels_map[channel.serial_no] = channel
+            if channel.stats is not None:
+                for stat in channel.stats.stats:
+                    id_stats_map[str(stat.id)]=stat
 
     return channels, id_channels_map
 
@@ -216,7 +234,7 @@ def setup_accessories(hub, accessories):
 
 id_hardware_map = load_hardware_config(id_hardware_map)
 
-hardware_id_channels_map, id_channels_map = load_channels(hardware_id_channels_map, id_channels_map)
+hardware_id_channels_map, id_channels_map = load_channels(hardware_id_channels_map, id_channels_map, id_stats_map)
 
 COMS = get_pico_ports()
 setup_picos(COMS, id_hardware_map, hardware_id_channels_map)
