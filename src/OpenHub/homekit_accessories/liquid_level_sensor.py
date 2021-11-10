@@ -9,11 +9,11 @@ class LiquidLevelSensor(HomeKitSensorInterface):
     run_debug_message = "Liquid at this Level: "
 
 
-    def __init__(self, serial_no=None, display_name=None, channel_interface_serial_no=None, *args, **kwargs):
+    def __init__(self, serial_no=None, display_name=None, channel_interface_serial_no=None, config=None, *args, **kwargs):
         self.category = CATEGORY_OTHER
         self.scale = float((1 / 65536) * 100)
         super().__init__(serial_no=serial_no, display_name=display_name,
-                         channel_interface_serial_no=channel_interface_serial_no, *args, **kwargs)
+                         channel_interface_serial_no=channel_interface_serial_no,config=config, *args, **kwargs)
 
     def set_display_name(self, display_name):
         if display_name is None:

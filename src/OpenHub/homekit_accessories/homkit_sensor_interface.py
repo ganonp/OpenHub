@@ -3,7 +3,7 @@ from pyhap.accessory import Accessory
 from pyhap.accessory import CATEGORY_OTHER
 import logging
 from OpenHub.globals import id_channels_map \
-    , driver
+    , driver, accessory_id_data_transformer_map
 import uuid
 
 
@@ -27,8 +27,10 @@ class HomeKitSensorInterface(ABC, Accessory):
     calibrator = None
     aid = None
 
+    data_transformer = None
+
     def __init__(self, serial_no=uuid.uuid4(), display_name=None, channel_interface_serial_no=None,
-                 data_transformer=None, *args, **kwargs):
+                 data_transformer=None,config=None, *args, **kwargs):
         ABC.__init__(self)
         self.display_name = self.set_display_name(display_name)
         self.serial_no = serial_no
@@ -39,7 +41,10 @@ class HomeKitSensorInterface(ABC, Accessory):
 
         self.service = self.add_functional_service()
         self.char = self.add_functional_service_characteristic()
-        self.data_transformer = data_transformer
+        if config is not None and 'datatransformer' in config.keys():
+            self.data_transformer = config['datatransformer']
+        if config is not None and 'data_transformer' in config.keys():
+            self.data_transformer = config['data_transformer']
 
 
     def add_info_service(self):
@@ -78,4 +83,6 @@ class HomeKitSensorInterface(ABC, Accessory):
                     self.char.set_value(self.scale * float(data['value']))
         else:
             val = await self.data_transformer.run()
+            self.logger.info(self.display_name + " Output: " + str(val))
+
             self.char.set_value(float(val))

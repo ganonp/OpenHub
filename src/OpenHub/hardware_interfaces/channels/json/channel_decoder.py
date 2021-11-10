@@ -10,39 +10,57 @@ from OpenHub.hardware_interfaces.channels.veml7700_light import VEML7700Light
 from OpenHub.hardware_interfaces.channels.veml7700_lux import VEML7700Lux
 
 from OpenHub.hardware_interfaces.channels.pi_pico_relay import PiPicoRelay
-from OpenHub.hardware_interfaces.channels.stats.json.stats_decoder import StatsDecoder
+from OpenHub.hardware_interfaces.channels.stat.max import Max
+from OpenHub.hardware_interfaces.channels.stat.min import Min
+import logging
 
 class ChannelDecoder(json.JSONDecoder):
     def __init__(self, *args, **kwargs):
         json.JSONDecoder.__init__(self, object_hook=self.object_hook, *args, **kwargs)
 
-    def object_hook(self, dct):
-        if 'channel_stats' in dct.keys() and dct['channel_stats'] is not None:
-            channel_stats = json.loads(dct['channel_stats'], cls=StatsDecoder)
+    def object_hook(self, config):
+        logger = logging.getLogger(ChannelDecoder.__name__)
+        logger.info(str(config))
+        model = config['model']
+        type = config['type']
+        if model=='ChannelStats' or model=='ChannelStat':
+            if type == 'MAX':
+                return Max(config)
+            if type == 'MIN':
+                return Min(config)
 
-        type = dct['type']
+        type = config['type']
+        if 'channelstats_set' in config.keys():
+            stats=config['channelstats_set']
+        elif 'channel_stats' in config.keys():
+            stats=config['channelstats']
+        else:
+            stats=None
+
         if type == DHT22Humidity.__name__:
-            return DHT22Humidity(dct, channel_stats=channel_stats)
+            return DHT22Humidity(config=config, channel_stats=stats)
         if type == DHT22Temp.__name__:
-            return DHT22Temp(dct, channel_stats=channel_stats)
+            return DHT22Temp(config=config, channel_stats=stats)
         elif type == MCP3008Analog.__name__:
             return MCP3008Analog()
 
         elif type == ModProbeTemp.__name__:
-            return ModProbeTemp(dct, channel_stats=channel_stats)
+            return ModProbeTemp(config=config, channel_stats=stats)
 
         elif type == PiPicoAnalog.__name__:
-            return PiPicoAnalog(dct, channel_stats=channel_stats)
+            return PiPicoAnalog(config=config, channel_stats=stats)
         elif type == PiPicoACAnalog.__name__:
-            return PiPicoACAnalog(dct, channel_stats=channel_stats)
+            return PiPicoACAnalog(config=config, channel_stats=stats)
         elif type == PiPicoPump.__name__:
-            return PiPicoPump(dct, channel_stats=channel_stats)
+            return PiPicoPump(config=config, channel_stats=stats)
 
         elif type == PiPicoRelay.__name__:
-            return PiPicoRelay(dct, channel_stats=channel_stats)
+            return PiPicoRelay(config=config, channel_stats=stats)
 
         elif type == VEML7700Light.__name__:
-            return VEML7700Light(dct, channel_stats=channel_stats)
+            return VEML7700Light(config=config, channel_stats=stats)
 
         elif type == VEML7700Lux.__name__:
-            return VEML7700Lux(dct, channel_stats=channel_stats)
+            return VEML7700Lux(config=config, channel_stats=stats)
+
+        return super().object_hook( config)

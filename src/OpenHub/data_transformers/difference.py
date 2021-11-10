@@ -1,5 +1,5 @@
 import logging
-from data_transformer import DataTransformer
+from .data_transformer import DataTransformer
 
 
 class Difference(DataTransformer):

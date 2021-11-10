@@ -1,5 +1,5 @@
 import requests
-
+import json
 
 class Stats:
     def __init__(self, stats_config):
@@ -12,8 +12,10 @@ class Stats:
     def update_server(self,stat):
         stat_dict = {}
         stat_dict['id'] = stat.id
+        stat_dict['type'] = stat.type
         stat_dict['value'] = stat.value
-        response = requests.post('http://' + '192.168.3.132' + ':8000/channelstats/', json=stat_dict)
+        stat_dict['channel'] = stat.channel_serial
+        response = requests.post('http://' + '192.168.3.132' + ':8000/channelstats/', data=stat_dict)
 
     def update_on_server(self):
         for stat in self.stats:

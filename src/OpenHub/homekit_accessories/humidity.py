@@ -19,9 +19,9 @@ class HumiditySensor(HomeKitSensorInterface):
     name = None
     display_name = None
 
-    def __init__(self, serial_no=None, display_name=None, channel_interface_serial_no=None, *args, **kwargs):
+    def __init__(self, serial_no=None, display_name=None, channel_interface_serial_no=None,config=None, *args, **kwargs):
         super().__init__(serial_no=serial_no, display_name=display_name,
-                         channel_interface_serial_no=channel_interface_serial_no, *args, **kwargs)
+                         channel_interface_serial_no=channel_interface_serial_no, config=config, *args, **kwargs)
 
     def set_display_name(self, display_name):
         if display_name is None:

@@ -15,7 +15,7 @@ import json
 from .config_files import HAP_PYTHON_CHARACTERISTICS_FILE, HAP_PYTHON_SERVICES_FILE, HAP_PYTHON_ACCESSORIES_FILE
 from .hardware_interfaces.json import hardware_interface_decoder
 from .hardware_interfaces.channels.json.channel_decoder import ChannelDecoder
-from .globals import id_hardware_map, hardware_id_channels_map, id_channels_map, id_stats_map, accessories, hub
+from .globals import id_hardware_map, hardware_id_channels_map, id_channels_map, id_stats_map, accessory_id_data_transformer_map,accessories, hub
 import OpenHub.globals as glob
 
 from requests.adapters import HTTPAdapter
@@ -54,13 +54,16 @@ else:
         serial_json['serial_no'] = hub_serial_no
         json.dump(serial_json, serial_file_json)
 
+
+
 def find_openhub_api_on_local_network():
     if os.path.isfile(ip_file_path):
         with open(ip_file_path, 'r') as ip_file:
-            ip = ip_file['ip']
+            ip_json = json.load(ip_file)
+            ip = ip_json['ip']
             logger.debug('Trying ip: ' + str(ip))
             try:
-                response = requests.get('http://' + str(ip) + ':8000/openhubapi/about')
+                response = requests.get('http://' + str(ip) + ':8000/openhubapi/about', timeout=5)
                 if response.ok:
                     api_ip = ip
                     return api_ip
@@ -74,11 +77,13 @@ def find_openhub_api_on_local_network():
     for ip in ips:
         logger.debug('Trying ip: ' + str(ip))
         try:
-            response = requests.get('http://'+str(ip)+':8000/openhubapi/about')
+            response = requests.get('http://'+str(ip)+':8000/openhubapi/about', timeout=5)
             if response.ok:
                 api_ip = ip
                 with open(ip_file_path, 'w') as ip_file:
-                    ip_file['ip'] = str(api_ip)
+                    ip_json = {}
+                    ip_json['ip'] = str(api_ip)
+                    json.dump(ip_json, ip_file)
                 return api_ip
         except:
             continue
@@ -195,26 +200,35 @@ def load_hardware_config(hardware):
 def load_channels(channels, id_channels_map, id_stats_map):
     for hard in id_hardware_map.values():
         response = requests.get('http://192.168.3.132:8000/hardwares/' + str(hard.serial_no) + '/channels')
-        data = json.dumps(response.json())
+
+        data = json.loads(json.dumps(response.json()),cls=ChannelDecoder)
         t = []
-        for channel in response.json():
-            t.append(json.loads(json.dumps(channel), cls=ChannelDecoder))
+        for channel in data:
+            t.append(channel)
         channels[str(hard.serial_no)] = t
     for hard in id_hardware_map.values():
         for channel in channels[str(hard.serial_no)]:
             id_channels_map[channel.serial_no] = channel
-            if channel.stats is not None:
-                for stat in channel.stats.stats:
-                    id_stats_map[str(stat.id)]=stat
+
 
     return channels, id_channels_map
 
 
-def load_homekit_accessory_config(accessories):
+def load_homekit_accessory_config(accessories,accessory_id_data_transformer_map):
     from OpenHub.homekit_accessories.json import homekit_decoder
+    # from OpenHub.data_tranformers.json.data_tranformer_decoder import DataTransformerDecoder
+
     response = http.get('http://192.168.3.132:8000/hubs/' + hub_serial_no + '/accessories',headers={'Accept': 'application/json'})
-    data = json.dumps(response.json())
-    accessories_temp = json.loads(data, cls=homekit_decoder.HomekitDecoder)
+    # all_data = response.json()
+    # for accessory in all_data:
+    #     if 'datatransformer' in accessory.keys():
+    #         accessory_id_data_transformer_map[accessory['id']] = json.loads(json.dumps(accessory['datatransformer']), cls=DataTransformerDecoder)
+    #         accessory['datatransformer']=None
+    # data = json.dumps(all_data)
+    # logger.info(str(data))
+
+
+    accessories_temp = json.loads(json.dumps(response.json()), cls=homekit_decoder.HomekitDecoder)
     for accessory in accessories_temp:
         accessories[accessory.serial_no] = accessory
     return accessories
@@ -275,7 +289,7 @@ glob.driver = AccessoryDriver(port=51826, persist_file=HAP_PYTHON_ACCESSORIES_FI
 
 hub = load_hub_config(hub)
 
-accessories = load_homekit_accessory_config(accessories)
+accessories = load_homekit_accessory_config(accessories,accessory_id_data_transformer_map)
 setup_accessories(hub, accessories)
 
 resource.setrlimit(resource.RLIMIT_NOFILE, (65536, 65536))

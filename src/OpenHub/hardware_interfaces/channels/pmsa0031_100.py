@@ -5,10 +5,10 @@ import logging
 class PMSAAirQuality100(ChannelInterface):
     logger = logging.getLogger(__name__)
 
-    def __init__(self, pmsa_airquality=None, hardware_serial_no=None, serial_no=None, *args, **kwargs):
+    def __init__(self, pmsa_airquality=None, hardware_serial_no=None, serial_no=None, channel_stats=None,*args, **kwargs):
         self.pmsa_airquality = pmsa_airquality
         self.type = __name__
-        super().__init__(hardware_serial_no=hardware_serial_no, serial_no=serial_no, *args, **kwargs)
+        super().__init__(config=config,hardware_serial_no=hardware_serial_no, serial_no=serial_no, channel_stats=channel_stats,*args, **kwargs)
 
     def get_raw_data(self):
         try:

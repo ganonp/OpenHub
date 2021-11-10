@@ -1,16 +1,15 @@
 import logging
 from OpenHub.homekit_accessories.homkit_sensor_interface import HomeKitSensorInterface
-from OpenHub.calibrators.soil_moisture_voltage_converter import SoilMoistureVoltageConverter
 
 
 class SoilMoistureSensor(HomeKitSensorInterface):
     logger = logging.getLogger(__name__)
     run_debug_message = "Current Soil Moisture: "
 
-    def __init__(self, serial_no=None, display_name=None, channel_interface_serial_no=None, *args, **kwargs):
+    def __init__(self, serial_no=None, display_name=None, channel_interface_serial_no=None, config=None, *args, **kwargs):
         self.scale = float((1 / 65536) * 100)
         super().__init__(serial_no=serial_no, display_name=display_name,
-                         channel_interface_serial_no=channel_interface_serial_no, *args, **kwargs)
+                         channel_interface_serial_no=channel_interface_serial_no,config=config, *args, **kwargs)
 
     # def __init__(self, calibrator=SoilMoistureVoltageConverter(), serial_no=None, display_name=None,
     #              channel_interface_serial_no=None, *args, **kwargs):

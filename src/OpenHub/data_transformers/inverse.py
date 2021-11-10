@@ -2,10 +2,9 @@ import logging
 from .data_transformer import DataTransformer
 
 
-class Product(DataTransformer):
+class Inverse(DataTransformer):
 
     def perform_op(self, inputs):
-        product = 1
         for input in inputs:
-            product = product * input
+            product = float(1/float(input))
         return product

@@ -8,12 +8,12 @@ from OpenHub.globals import id_hardware_map
 class PiPicoACAnalog(ChannelInterface):
     logger = logging.getLogger(__name__)
 
-    def __init__(self, config, hardware_serial_no=None, serial_no=None, *args, **kwargs):
+    def __init__(self, config, hardware_serial_no=None, serial_no=None,channel_stats=None, *args, **kwargs):
         self.pipico = id_hardware_map[config['hardware']]
         self.channel_index = config['channel_index']
         self.serial_no = config['id']
         self.type = config['type']
-        super().__init__(hardware_serial_no=self.pipico.serial_no, serial_no=self.serial_no, *args, **kwargs)
+        super().__init__(config=config,hardware_serial_no=self.pipico.serial_no, serial_no=self.serial_no,channel_stats=channel_stats, *args, **kwargs)
 
     async def get_raw_data(self):
         command = "data"

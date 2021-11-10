@@ -1,7 +1,7 @@
 import logging
 from abc import ABC, abstractmethod
 import json
-from globals import id_channels_map,id_stats_map
+from OpenHub.globals import id_channels_map,id_stats_map
 
 class DataTransformer(ABC):
     logger = logging.getLogger(__name__)
@@ -10,12 +10,14 @@ class DataTransformer(ABC):
 
     def __init__(self, dct, data_transformers=None):
         self.channels = []
-        self.stats=[]
+        self.stats=dct['channel_stats']
+        self.constants = dct['data_transformer_constants']
+
         for channel in dct['channels']:
             self.channels.append(id_channels_map[channel])
-        for stat in dct['stats']:
+        for stat in dct['channel_stats']:
             self.stats.append(id_stats_map[str(stat['id'])])
-        self.data_transformers = data_transformers
+        self.data_transformers = dct['children']
 
         super().__init__()
 
@@ -26,10 +28,18 @@ class DataTransformer(ABC):
                 outputs.append(await transformer.run())
         if self.channels is not None:
             for channel in self.channels:
-                outputs.append(await channel.run())
+                channel_out = await channel.run()
+                if 'averaged' in channel_out.keys():
+                    out = float(channel_out['averaged'])
+                elif 'value' in channel_out.keys():
+                    out = float(channel_out['value'])
+                outputs.append(out)
         if self.stats is not None:
             for stat in self.stats:
                 outputs.append(stat.value)
+        if self.constants is not None:
+            for constant in self.constants:
+                outputs.append(constant.value)
 
         return self.perform_op(outputs)
 

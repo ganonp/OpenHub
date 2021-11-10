@@ -13,6 +13,18 @@ from OpenHub.homekit_accessories.camera import Camera
 
 from OpenHub.homekit_accessories.relay import Relay
 
+from OpenHub.data_transformers.constants.constant import Constant
+from OpenHub.data_transformers.data_transformer import DataTransformer
+from OpenHub.data_transformers.difference import Difference
+from OpenHub.data_transformers.divide import Divide
+from OpenHub.data_transformers.max import Max
+from OpenHub.data_transformers.min import Min
+from OpenHub.data_transformers.product import Product
+from OpenHub.data_transformers.sum import Sum
+from OpenHub.data_transformers.inverse import Inverse
+
+import logging
+
 
 class HomekitDecoder(json.JSONDecoder):
 
@@ -20,31 +32,61 @@ class HomekitDecoder(json.JSONDecoder):
         json.JSONDecoder.__init__(self, object_hook=self.object_hook, *args, **kwargs)
 
     def object_hook(self, dct):
-        type = dct['type']
+        logger = logging.getLogger(HomekitDecoder.__name__)
+        logger.info(str(dct))
+        type = None
+        model = None
 
-        if type == AirTemperatureSensor.__name__:
-            return AirTemperatureSensor(dct['id'],dct['display_name'],dct['channels'][0])
-        if type == HumiditySensor.__name__:
-            return HumiditySensor(dct['id'],dct['display_name'],dct['channels'][0])
-        elif type == LightSensor.__name__:
-            return LightSensor(dct['id'],dct['display_name'],dct['channels'][0])
+        if 'model' in dct.keys():
+            model = dct['model']
 
-        elif type == SoilMoistureSensor.__name__:
-            return SoilMoistureSensor(dct['id'],dct['display_name'],dct['channels'][0])
+        if model == 'DataTransformerConstants':
+            return Constant(id=dct['id'],index=dct['index'],value=dct['value'])
+        elif model == 'DataTransformer':
+            type = dct['type']
 
-        elif type == SoilTemperatureSensor.__name__:
-            return SoilTemperatureSensor(dct['id'],dct['display_name'],dct['channels'][0])
-        elif type == PressureSensor.__name__:
-            return PressureSensor(dct['id'],dct['display_name'],dct['channels'][0])
-        elif type == Pump.__name__:
-            return Pump(dct['id'],dct['display_name'],dct['channels'][0])
-        elif type == Relay.__name__:
-            return Relay(dct['id'],dct['display_name'],dct['channels'][0])
-        elif type == LiquidLevelSensor.__name__:
-            return LiquidLevelSensor(dct['id'],dct['display_name'],dct['channels'][0])
-        elif type == ETapeSensor.__name__:
-            return ETapeSensor(dct['id'],dct['display_name'],dct['channels'][0])
-        elif type == Camera.__name__:
-            return Camera(dct['id'],dct['display_name'])
+            if type == 'DIVIDE':
+                return Divide(dct)
+            if type == 'MAX':
+                return Max(dct)
+            if type == 'PRODUCT':
+                return Product(dct)
+            if type == 'DIFFERENCE':
+                return Difference(dct)
+            if type == 'MIN':
+                return Min(dct)
+            if type == 'SUM':
+                return Sum(dct)
+            if type == 'INVERSE':
+                return Inverse(dct)
         else:
-            return Hub(dct['id'],dct['display_name'])
+
+            if 'type' in dct.keys():
+                type = dct['type']
+
+            if type == AirTemperatureSensor.__name__:
+                return AirTemperatureSensor(dct['id'], dct['display_name'], dct['channels'][0],config=dct)
+            if type == HumiditySensor.__name__:
+                return HumiditySensor(dct['id'], dct['display_name'], dct['channels'][0],config=dct)
+            elif type == LightSensor.__name__:
+                return LightSensor(dct['id'], dct['display_name'], dct['channels'][0],config=dct)
+
+            elif type == SoilMoistureSensor.__name__:
+                return SoilMoistureSensor(dct['id'], dct['display_name'], dct['channels'][0],config=dct)
+
+            elif type == SoilTemperatureSensor.__name__:
+                return SoilTemperatureSensor(dct['id'], dct['display_name'], dct['channels'][0],config=dct)
+            elif type == PressureSensor.__name__:
+                return PressureSensor(dct['id'], dct['display_name'], dct['channels'][0],config=dct)
+            elif type == Pump.__name__:
+                return Pump(dct['id'], dct['display_name'], dct['channels'][0],config=dct)
+            elif type == Relay.__name__:
+                return Relay(dct['id'], dct['display_name'], dct['channels'][0],config=dct)
+            elif type == LiquidLevelSensor.__name__:
+                return LiquidLevelSensor(dct['id'], dct['display_name'], dct['channels'][0],config=dct)
+            elif type == ETapeSensor.__name__:
+                return ETapeSensor(dct['id'], dct['display_name'], dct['channels'][0],config=dct)
+            elif type == Camera.__name__:
+                return Camera(dct['id'], dct['display_name'])
+            else:
+                return Hub(dct['id'], dct['display_name'])
