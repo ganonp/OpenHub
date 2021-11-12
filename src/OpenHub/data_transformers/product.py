@@ -8,4 +8,6 @@ class Product(DataTransformer):
         product = 1
         for input in inputs:
             product = product * input
+        self.logger.info('product ' + str(product))
+
         return product
