@@ -38,6 +38,7 @@ import os.path
 
 file_path = '/home/openhubdaemon/openhub_serial.json'
 ip_file_path = '/home/openhubdaemon/api_ip.json'
+display_name_file_path = '/home/openhubdaemon/display_name.json'
 
 logger = logging.getLogger(__name__)
 
@@ -96,7 +97,13 @@ def check_if_api_has_hub_serial(openhub_api_ip):
         hub_dict = {}
         hub_dict['id'] = hub_serial_no
         hub_dict['ip'] = ip
-        hub_dict['display_name'] = 'New ' + str(hub_serial_no)
+        try:
+            with open(display_name_file_path, 'r') as display_name_file:
+                display_name = json.load(display_name_file)['display_name']
+                hub_dict['display_name'] = display_name
+        except:
+            logger.warn("No display name data, using default: " + str(hub_serial_no))
+            hub_dict['display_name'] = str(hub_serial_no)
         hub_dict['aid'] = 1
         response = requests.post('http://' + str(openhub_api_ip) + ':8000/hub/',json=hub_dict)
 

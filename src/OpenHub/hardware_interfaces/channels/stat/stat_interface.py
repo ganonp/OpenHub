@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import uuid
-from globals import id_stats_map
+from OpenHub.globals import id_stats_map
 import logging
 class StatInterface(ABC):
     logger = logging.getLogger(__name__)

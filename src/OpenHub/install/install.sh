@@ -19,10 +19,11 @@ sudo apt-get install pigpio python-pigpio python3-pigpio
 
 sudo apt install ffmpeg -y
 
-#echo "Please Enter a Name For This Hub:"
-#read varname
-#
-#sudo echo "{\"name\":\"$varname\"}"
+
+echo -e "Enter a name for this Hub: "
+read hubname
+sudo echo "{\"display_name\":\"${hubname}\"}" > "/home/openhubdaemon/display_name.json"
+
 
 sudo set -o noclobber
 sudo echo "[Unit]
