@@ -29,7 +29,7 @@ Includes code for hardware:
 * VEML7700
 * PMSA0013
 * MCP3008
-* PiPico (requires OpenHubController)
+* PiPico (requires [OpenController](https://github.com/ganonp/OpenController))
 
 ## Installation 
 
