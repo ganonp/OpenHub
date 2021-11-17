@@ -6,8 +6,16 @@ class Stats:
         self.stats = stats_config
 
     def update(self,value):
+        min_stat = None
+        max_stat = None
         for stat in self.stats:
-            stat.update(value)
+            if stat.type == 'MIN':
+                min_stat = stat
+            if stat.type == 'MAX':
+                max_stat = stat
+        min_stat.update(value)
+        if min_stat.value != value:
+            max_stat.update(value)
 
     def update_server(self,stat):
         stat_dict = {}
