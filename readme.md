@@ -1,15 +1,15 @@
 # OpenHub
 
-An opensource homekit iOT hub. This project is built on [HAP-Python](https://github.com/ikalchev/HAP-python). 
+An opensource iOT hub for the HomeKit framework. Works with [OpenHubAPI](https://github.com/ganonp/OpenHubAPI) and [OpenController](https://github.com/ganonp/OpenController). This project is built on [HAP-Python](https://github.com/ikalchev/HAP-python). 
 
 Main features:
 
 * Customizable
-* Manage many iOT hubs from one location
-* Integrated with the home automation framework [Home Assistant](https://github.com/home-assistant/home-assistant).
-* Integrates with HomeKit and Siri
+* Managed through a GUI via [OpenHubAPI](https://github.com/ganonp/OpenHubAPI)
+* Works with the home automation framework [Home Assistant](https://github.com/home-assistant/home-assistant).
+* Works with HomeKit and Siri
 
-Sensors:
+Accessories For:
 * Air Temperature
 * Soil Temperature
 * AC Current
@@ -19,6 +19,9 @@ Sensors:
 * Water Pressure
 * Air Quality
 * Light
+* Relays
+* Pumps
+* Valves
 
 Includes code for hardware:
 * DHT22
