@@ -5,10 +5,12 @@ from OpenHub.homekit_accessories.homkit_sensor_interface import HomeKitSensorInt
 class AirQuality(HomeKitSensorInterface):
     logger = logging.getLogger(__name__)
     run_debug_message = "Current Air Quality: "
+    category = 10
 
     def __init__(self, serial_no=None, display_name=None, channel_interface_serial_no=None,config=None, *args, **kwargs):
         super().__init__(serial_no=serial_no, display_name=display_name,
                          channel_interface_serial_no=channel_interface_serial_no, config=config, *args, **kwargs)
+
 
     def set_display_name(self, display_name):
         if display_name is None:
@@ -19,16 +21,7 @@ class AirQuality(HomeKitSensorInterface):
     def add_functional_service(self):
         return self.add_preload_service('AirQualitySensor')
 
-    def add_additional_services(self):
-        self.pm25 = self.add_preload_service('PM2.5Density')
-        self.pm100 = self.add_preload_service('PM10Density')
-
     def add_functional_service_characteristic(self):
-        return self.service.get_characteristic('AirQuality')
+        return self.service.get_characteristic('PM2.5Density')
 
-    async def run(self):
-        data = await self.channel.get_raw_data()
-        self.logger.info(self.display_name + " Output: " + str(data))
-        self.char.set_value(3)
-        self.pm25.set_value(data)
 

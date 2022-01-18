@@ -10,6 +10,7 @@ from OpenHub.homekit_accessories.liquid_level_sensor import LiquidLevelSensor
 from OpenHub.homekit_accessories.etape import ETapeSensor
 from OpenHub.homekit_accessories.pump import Pump
 from OpenHub.homekit_accessories.camera import Camera
+from OpenHub.homekit_accessories.air_quality import AirQuality
 
 from OpenHub.homekit_accessories.relay import Relay
 
@@ -88,5 +89,7 @@ class HomekitDecoder(json.JSONDecoder):
                 return ETapeSensor(dct['id'], dct['display_name'], dct['channels'][0],config=dct)
             elif type == Camera.__name__:
                 return Camera(dct['id'], dct['display_name'])
+            elif type == AirQuality.__name__:
+                return AirQuality(dct['id'], dct['display_name'], dct['channels'][0],config=dct)
             else:
                 return Hub(dct['id'], dct['display_name'])

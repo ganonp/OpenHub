@@ -205,12 +205,23 @@ def load_hardware_config(hardware):
 
 
 def load_channels(channels, id_channels_map, id_stats_map):
+    from OpenHub.hardware_interfaces.channels.pi_relay import PiRelay
     for hard in id_hardware_map.values():
         response = requests.get('http://192.168.3.132:8000/hardwares/' + str(hard.serial_no) + '/channels')
 
         data = json.loads(json.dumps(response.json()),cls=ChannelDecoder)
         t = []
         for channel in data:
+
+            if channel.__class__.__name__ == PiRelay.__name__:
+                response = requests.get('http://192.168.3.132:8000/channels/' + str(channel.serial_no) + '/io')
+                io_data = response.json()
+                pi_io_config = {}
+                for datum in io_data:
+                    if 'label' in datum.keys() and datum['label'] is not None and 'pin' in datum.keys():
+                        pi_io_config[datum['label']] = str(datum['pin'])
+                    pi_io_config = {**pi_io_config, **datum}
+                channel.setup(pi_io_config['pin'])
             t.append(channel)
         channels[str(hard.serial_no)] = t
     for hard in id_hardware_map.values():
@@ -243,6 +254,7 @@ def load_homekit_accessory_config(accessories,accessory_id_data_transformer_map)
 
 def setup_accessories(hub, accessories):
     for accessory in accessories.values():
+        logger.debug("adding accessory id: " + accessory.serial_no)
         hub.add_accessory(accessory)
     glob.driver.add_accessory(accessory=hub)
 

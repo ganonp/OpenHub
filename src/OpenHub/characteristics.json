@@ -232,7 +232,7 @@
       "minStep": 1,
       "minValue": 0
    },
-   "PM2.5Density": {
+  "PM2.5Density": {
       "Format": "float",
       "Permissions": [
          "pr",

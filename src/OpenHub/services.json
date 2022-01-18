@@ -6,6 +6,7 @@
          "StatusTampered",
          "StatusLowBattery",
          "Name",
+        "AirQuality",
          "PM2.5Density",
          "PM10Density",
          "VOCDensity",
@@ -13,7 +14,7 @@
          "CarbonDioxideLevel"
       ],
       "RequiredCharacteristics": [
-         "AirQuality"
+         "PM2.5Density"
       ],
       "UUID": "0000008D-0000-1000-8000-0026BB765291"
    },

@@ -74,4 +74,6 @@ WantedBy=network-online.target" > /lib/systemd/system/network-wait-online.servic
 
 sudo systemctl enable network-wait-online.service
 
+sudo systemctl enable pigpiod
+
 echo 'Please reboot.'

@@ -33,7 +33,6 @@ class PiPico(HardwareInterface):
         #     self.serial_com = pico_config['serial_com']
         # if self.serial_com is not None:
         #     self.serial = Serial(self.serial_com, 9600, timeout=1)
-        GPIO.setup(self.interrupt, GPIO.OUT)
         super(PiPico, self).__init__(self.serial_no, channels, *args, **kwargs)
 
     def set_serial_com(self, serial_com):
