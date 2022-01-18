@@ -14,4 +14,4 @@ class ModProbeTemp(ChannelInterface):
         super().__init__(config=config,hardware_serial_no=self.mod_probe.serial_no, serial_no=self.serial_no,channel_stats=channel_stats, *args, **kwargs)
 
     async def get_raw_data(self):
-        return {'value':self.mod_probe.read_temp_c()}
+        return {'value':await self.mod_probe.read_temp_c()}
