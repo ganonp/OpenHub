@@ -15,4 +15,4 @@ class DHT22Temp(ChannelInterface):
         super().__init__(config=config,hardware_serial_no=self.dht.serial_no, serial_no=self.serial_no, channel_stats=channel_stats,*args, **kwargs)
 
     async def get_raw_data(self):
-        return {'value':float(self.dht.get_temp_c())}
+        return {'value':float(await self.dht.get_temp_c())}

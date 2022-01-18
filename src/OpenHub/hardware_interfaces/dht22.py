@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from OpenHub.hardware_interfaces import hardware_interface
 from OpenHub.hardware_interfaces.channels.dht22_humidity import DHT22Humidity
@@ -29,18 +30,23 @@ class DHT22(hardware_interface.HardwareInterface):
     def get_channel(self, channel):
         return self.channels[channel]
 
-    def get_data(self, type):
+    async def get_data(self, type):
         valid = False
         while valid is False:
-            data = self.dhtDevice.read()
-            valid = data['valid']
+            try:
+                data = self.dhtDevice.read()
+                valid = data['valid']
+            except TimeoutError as e:
+                self.logger.error("Timeout error for DHT22 device.")
+                await asyncio.sleep(1)
+
         return data[type]
 
-    def get_temp_c(self):
-        return self.get_data('temp_c')
+    async def get_temp_c(self):
+        return await self.get_data('temp_c')
 
-    def get_temp_f(self):
-        return self.get_data('temp_f')
+    async def get_temp_f(self):
+        return await self.get_data('temp_f')
 
-    def get_humidity(self):
-        return self.get_data('humidity')
+    async def get_humidity(self):
+        return await self.get_data('humidity')
