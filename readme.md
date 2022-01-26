@@ -36,8 +36,8 @@ Includes code for hardware:
 
 ```
 $ sudo apt-get install python3-pip
-$ sudo python3 pip -m install openhub
-$ sudo python3 pip -m OpenHub.install
+$ sudo python3 -m pip install openhub
+$ sudo python3 -m OpenHub.install
 ```
 
 ## Home Assistant Integration 
