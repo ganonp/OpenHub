@@ -152,7 +152,7 @@ def setup_picos(COMS, hardwares, hardware_id_channels_map):
         channels_temp = []
         if pico_serial in hardware_id_channels_map.keys():
             for channel in hardware_id_channels_map[pico_serial]:
-                response = requests.get('http://192.168.3.132:8000/channels/' + str(channel.serial_no) + '/io')
+                response = requests.get('http://' + str(openhub_api_ip) + ':8000/channels/' + str(channel.serial_no) + '/io')
                 data = response.json()
                 pico_config_element = {}
                 pico_config_element['serial_no'] = channel.serial_no
@@ -188,7 +188,7 @@ def _gpio_setup(_cls, pin):
 def load_hub_config(hub):
     from OpenHub.homekit_accessories.json import homekit_decoder
 
-    response = http.get('http://192.168.3.132:8000/hubs/' + hub_serial_no)
+    response = http.get('http://' + str(openhub_api_ip) + ':8000/hubs/' + hub_serial_no)
     data = json.dumps(response.json())
     hub = json.loads(data, cls=homekit_decoder.HomekitDecoder)
 
@@ -196,7 +196,7 @@ def load_hub_config(hub):
 
 
 def load_hardware_config(hardware):
-    response = http.get('http://192.168.3.132:8000/hubs/' + hub_serial_no + '/hardwares', headers={'Accept': 'application/json'})
+    response = http.get('http://' + str(openhub_api_ip) + ':8000/hubs/' + hub_serial_no + '/hardwares', headers={'Accept': 'application/json'})
     data = json.dumps(response.json())
     hardware_temp = json.loads(data, cls=hardware_interface_decoder.HardwareDecoder)
     for hard_t in hardware_temp:
@@ -207,14 +207,14 @@ def load_hardware_config(hardware):
 def load_channels(channels, id_channels_map, id_stats_map):
     from OpenHub.hardware_interfaces.channels.pi_relay import PiRelay
     for hard in id_hardware_map.values():
-        response = requests.get('http://192.168.3.132:8000/hardwares/' + str(hard.serial_no) + '/channels')
+        response = requests.get('http://' + str(openhub_api_ip) + ':8000/hardwares/' + str(hard.serial_no) + '/channels')
 
         data = json.loads(json.dumps(response.json()),cls=ChannelDecoder)
         t = []
         for channel in data:
 
             if channel.__class__.__name__ == PiRelay.__name__:
-                response = requests.get('http://192.168.3.132:8000/channels/' + str(channel.serial_no) + '/io')
+                response = requests.get('http://' + str(openhub_api_ip) + ':8000/channels/' + str(channel.serial_no) + '/io')
                 io_data = response.json()
                 pi_io_config = {}
                 for datum in io_data:
@@ -236,7 +236,7 @@ def load_homekit_accessory_config(accessories,accessory_id_data_transformer_map)
     from OpenHub.homekit_accessories.json import homekit_decoder
     # from OpenHub.data_tranformers.json.data_tranformer_decoder import DataTransformerDecoder
 
-    response = http.get('http://192.168.3.132:8000/hubs/' + hub_serial_no + '/accessories',headers={'Accept': 'application/json'})
+    response = http.get('http://' + str(openhub_api_ip) + ':8000/hubs/' + hub_serial_no + '/accessories',headers={'Accept': 'application/json'})
     # all_data = response.json()
     # for accessory in all_data:
     #     if 'datatransformer' in accessory.keys():

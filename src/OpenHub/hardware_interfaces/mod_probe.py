@@ -50,6 +50,6 @@ class ModProbe(HardwareInterface):
         except Exception as e:
             return float(-1)
 
-    def read_temp_f(self):
+    async def read_temp_f(self):
         temp_c = await self.read_temp_c()
         return temp_c * 9.0 / 5.0 + 32.0
