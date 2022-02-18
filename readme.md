@@ -40,6 +40,8 @@ $ sudo apt-get install python3-pip --fix-missing -y
 $ sudo python3 -m pip install openhub
 $ sudo python3 -m OpenHub.install
 ```
+When prompted, enter a name for the hub (this will make it easier to find from the OpenHubAPI GUI) and press enter.
+Please reboot when prompted.
 
 ## Home Assistant Integration 
 
