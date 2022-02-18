@@ -1,8 +1,3 @@
-from pyhap.accessory_driver import AccessoryDriver
-from pyhap.loader import Loader
-# import garden_bridge
-
-
 accessories = {}
 id_hardware_map = {}
 picos = []
@@ -14,11 +9,4 @@ calibration = {}
 hub = None
 loader = None
 driver = None
-#
-# def get_bridge(driver):
-#     bridge = garden_bridge.GardenBridge(driver)
-#     return bridge
-#
-#
-
-# driver.add_accessory(accessory=get_bridge(driver))
+openhub_api_ip = None

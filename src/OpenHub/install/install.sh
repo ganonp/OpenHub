@@ -1,28 +1,33 @@
 #!/bin/sh
 
-sudo adduser openhubdaemon
-sudo adduser openhubdaemon spi
-sudo adduser openhubdaemon i2c
-sudo adduser openhubdaemon gpio
-sudo usermod -a -G dialout openhubdaemon
+if id openhubdaemon &>/dev/null; then
+    echo 'openhubdaemon exists'
+else
+    sudo adduser --disabled-login --gecos "" openhubdaemon
+    sudo adduser openhubdaemon spi
+    sudo adduser openhubdaemon i2c
+    sudo adduser openhubdaemon gpio
+    sudo usermod -a -G dialout openhubdaemon
+fi
 
 cd /home/openhubdaemon
-sudo mkdir OpenHub
-cd OpenHub
-sudo mkdir OpenHub
-cd /home/openhubdaemon
-sudo mkdir OpenHubAPI
-cd OpenHubAPI
-sudo mkdir OpenHubAPI
 
-sudo apt-get install pigpio python-pigpio python3-pigpio
-
-sudo apt install ffmpeg -y
+if [ -d "/home/openhubdaemon/OpenHub" ]; then
+    echo "Directory /home/openhubdaemon/OpenHub exists."
+else
+    sudo mkdir OpenHub
+    cd OpenHub
+    sudo mkdir OpenHub
+fi
 
 
 echo -e "Enter a name for this Hub: "
 read hubname
 sudo echo "{\"display_name\":\"${hubname}\"}" > "/home/openhubdaemon/display_name.json"
+
+sudo apt-get install pigpio python-pigpio python3-pigpio -y
+
+sudo apt install ffmpeg -y
 
 
 sudo set -o noclobber

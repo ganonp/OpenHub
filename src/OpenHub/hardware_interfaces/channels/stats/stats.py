@@ -1,7 +1,7 @@
 import requests
 import json
 import time
-from OpenHub.main import openhub_api_ip
+from OpenHub import globals as glob
 
 class Stats:
     def __init__(self, stats_config):
@@ -29,13 +29,13 @@ class Stats:
         stat_dict['type'] = stat.type
         stat_dict['value'] = stat.value
         stat_dict['channel'] = stat.channel_serial
-        response = requests.post('http://' + str(openhub_api_ip) + ':8000/channelstats/', data=stat_dict)
+        response = requests.post('http://' + str(glob.openhub_api_ip) + ':8000/channelstats/', data=stat_dict)
 
     def update_server_with_data_point(self,value):
         stat_dict = {}
         stat_dict['value'] = str(int(float(value)))
         stat_dict['channel'] = str(self.stats[0].channel_serial)
-        response = requests.post('http://' + str(openhub_api_ip) + ':8000/channelstatdatapoint/', data=stat_dict)
+        response = requests.post('http://' + str(glob.openhub_api_ip) + ':8000/channelstatdatapoint/', data=stat_dict)
 
     def update_on_server(self):
         for stat in self.stats:
