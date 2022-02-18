@@ -35,6 +35,7 @@ Includes code for hardware:
 
 On a Raspberry Pi with a clean version of Raspbian Buster run:
 ```
+$ sudo apt-get update
 $ sudo apt-get install python3-pip --fix-missing -y
 $ sudo python3 -m pip install openhub
 $ sudo python3 -m OpenHub.install
