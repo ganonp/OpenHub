@@ -1,6 +1,6 @@
 # OpenHub
 
-An opensource iOT hub for the HomeKit framework. Works with [OpenHubAPI](https://github.com/ganonp/OpenHubAPI) and [OpenController](https://github.com/ganonp/OpenController). This project is built on [HAP-Python](https://github.com/ikalchev/HAP-python). 
+An open source iOT hub for the HomeKit framework. Works with [OpenHubAPI](https://github.com/ganonp/OpenHubAPI) and [OpenController](https://github.com/ganonp/OpenController). This project is built on [HAP-Python](https://github.com/ikalchev/HAP-python). 
 
 Main features:
 
@@ -35,7 +35,7 @@ Includes code for hardware:
 
 On a Raspberry Pi with a clean version of Raspbian Buster run:
 ```
-$ sudo apt-get install python3-pip -y
+$ sudo apt-get install python3-pip --fix-missing -y
 $ sudo python3 -m pip install openhub
 $ sudo python3 -m OpenHub.install
 ```
