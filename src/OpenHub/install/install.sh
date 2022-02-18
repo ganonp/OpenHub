@@ -29,9 +29,27 @@ sudo apt-get install pigpio python-pigpio python3-pigpio -y
 
 sudo apt install ffmpeg -y
 
+if id openhubapidaemon &>/dev/null; then
+    echo 'OpenHubAPI is not installed on this device.'
+        sudo set -o noclobber
+    sudo echo "[Unit]
+Description = OpenHub daemon
+Wants = network-online.target systemd-networkd-wait-online.service
+After = network-online.target systemd-networkd-wait-online.service local-fs.target
 
-sudo set -o noclobber
-sudo echo "[Unit]
+[Service]
+User = openhubdaemon
+Environment=\"PATH=/usr/local/lib/python3.7/dist-packages\"
+# Script starting HAP-python, e.g. main.py
+# Be careful to set any paths you use, e.g. for persisting the state.
+ExecStart = /usr/bin/python3 -m OpenHub
+
+[Install]
+WantedBy = multi-user.target" > /etc/systemd/system/OpenHub.service
+else
+    echo 'OpenHubAPI is installed on this device.'
+    sudo set -o noclobber
+    sudo echo "[Unit]
 Description = OpenHub daemon
 Wants = network-online.target systemd-networkd-wait-online.service OpenHubAPI.service
 After = network-online.target systemd-networkd-wait-online.service local-fs.target OpenHubAPI.service
@@ -45,6 +63,8 @@ ExecStart = /usr/bin/python3 -m OpenHub
 
 [Install]
 WantedBy = multi-user.target" > /etc/systemd/system/OpenHub.service
+fi
+
 
 
 sudo systemctl enable OpenHub
