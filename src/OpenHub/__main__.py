@@ -3,6 +3,7 @@ import signal
 import resource
 import asyncio
 import uuid
+import sys
 
 from pyhap.accessory_driver import AccessoryDriver
 from pyhap.loader import Loader
@@ -58,6 +59,16 @@ else:
 
 
 def find_openhub_api_on_local_network():
+    ip = "openhubapi.local"
+    if sys.argv[1]=='d':
+        ip = "openhubapidev.local"
+    try:
+        response = requests.get('http://' + str(ip) + ':8000/openhubapi/about', timeout=5)
+        if response.ok:
+            api_ip = ip
+            return api_ip
+    except:
+        logger.debug('error')
     if os.path.isfile(ip_file_path):
         with open(ip_file_path, 'r') as ip_file:
             ip_json = json.load(ip_file)
