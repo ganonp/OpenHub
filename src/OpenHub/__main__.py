@@ -221,6 +221,7 @@ def load_hardware_config(hardware):
 
 def load_channels(channels, id_channels_map, id_stats_map):
     from OpenHub.hardware_interfaces.channels.pi_relay import PiRelay
+    from OpenHub.hardware_interfaces.channels.adafruit_stepper_motor import AdafruitStepperMotor
     for hard in id_hardware_map.values():
         response = requests.get('http://' + str(glob.openhub_api_ip) + ':8000/hardwares/' + str(hard.serial_no) + '/channels')
 
@@ -237,6 +238,13 @@ def load_channels(channels, id_channels_map, id_stats_map):
                         pi_io_config[datum['label']] = str(datum['pin'])
                     pi_io_config = {**pi_io_config, **datum}
                 channel.setup(pi_io_config['pin'])
+            if channel.__class__.__name__ == AdafruitStepperMotor.__name__:
+                response = requests.get('http://' + str(glob.openhub_api_ip) + ':8000/channels/' + str(channel.serial_no) + '/io')
+                io_data = response.json()
+                pi_io_config = {}
+                for datum in io_data:
+                    pi_io_config = {**pi_io_config, **datum}
+                channel.setup(pi_io_config)
             t.append(channel)
         channels[str(hard.serial_no)] = t
     for hard in id_hardware_map.values():

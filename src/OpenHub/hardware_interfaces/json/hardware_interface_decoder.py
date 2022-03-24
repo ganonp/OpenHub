@@ -6,6 +6,7 @@ from OpenHub.hardware_interfaces.mcp3008 import MCP3008
 from OpenHub.hardware_interfaces.mod_probe import ModProbe
 from OpenHub.hardware_interfaces.pi_pico import PiPico
 from OpenHub.hardware_interfaces.pi import Pi
+from OpenHub.hardware_interfaces.adafruit_stepper_motor_hat import AdafruitStepperMotorHAT
 from OpenHub.hardware_interfaces.veml_7700 import VEML7700
 from OpenHub.hardware_interfaces.am2315 import AM2315
 from OpenHub.hardware_interfaces.PMSA0031 import PMSA0031
@@ -41,6 +42,8 @@ class HardwareDecoder(json.JSONDecoder):
                 hardware = PMSA0031(serial_no=dct['id'])
             elif type == 'VEML7700':
                 hardware = VEML7700(serial_no=dct['id'])
+            elif type == 'AdafruitStepperMotorHAT':
+                hardware = AdafruitStepperMotorHAT(serial_no=dct['id'])
             elif type == 'Pi':
                 hardware = Pi(dct,None)
         return hardware

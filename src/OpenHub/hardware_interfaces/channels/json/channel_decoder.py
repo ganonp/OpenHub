@@ -8,6 +8,7 @@ from OpenHub.hardware_interfaces.channels.pi_pico_ac_analog import PiPicoACAnalo
 from OpenHub.hardware_interfaces.channels.pi_pico_pump import PiPicoPump
 from OpenHub.hardware_interfaces.channels.veml7700_light import VEML7700Light
 from OpenHub.hardware_interfaces.channels.veml7700_lux import VEML7700Lux
+from OpenHub.hardware_interfaces.channels.adafruit_stepper_motor import AdafruitStepperMotor
 from OpenHub.hardware_interfaces.channels.am2315_temperature import AM2315Temperature
 from OpenHub.hardware_interfaces.channels.am2315_humidity import AM2315Humidity
 from OpenHub.hardware_interfaces.channels.pmsa0031_25 import PMSA003125
@@ -69,6 +70,8 @@ class ChannelDecoder(json.JSONDecoder):
 
         elif type == VEML7700Lux.__name__:
             return VEML7700Lux(config=config, channel_stats=stats)
+        elif type == AdafruitStepperMotor.__name__:
+            return AdafruitStepperMotor(config=config, channel_stats=stats)
         elif type == AM2315Temperature.__name__:
             return AM2315Temperature(config=config, channel_stats=stats)
         elif type == AM2315Humidity.__name__:
