@@ -7,7 +7,7 @@
       <excludeFolder url="file://$MODULE_DIR$/dist" />
       <excludeFolder url="file://$MODULE_DIR$/src/openhub.egg-info" />
     </content>
-    <orderEntry type="jdk" jdkName="Remote Python 3.7.3 (sftp://pi@192.168.3.132:22/usr/bin/python3)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Remote Python 3.7.3 (sftp://root@openhubdev.local:22/usr/bin/python3)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
