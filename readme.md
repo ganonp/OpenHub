@@ -8,6 +8,7 @@ Main features:
 * Managed through a GUI via [OpenHubAPI](https://github.com/ganonp/OpenHubAPI)
 * Works with the home automation framework [Home Assistant](https://github.com/home-assistant/home-assistant).
 * Works with HomeKit and Siri
+* Camera works with Raspberry Pi Zero + PiCam
 
 Accessories For:
 * Air Temperature
@@ -22,6 +23,7 @@ Accessories For:
 * Relays
 * Pumps
 * Valves
+* Camera
 
 Includes code for hardware:
 * DHT22
@@ -29,6 +31,7 @@ Includes code for hardware:
 * VEML7700
 * PMSA0013
 * MCP3008
+* PiCam
 * PiPico (requires [OpenController](https://github.com/ganonp/OpenController))
 
 ## Installation 
