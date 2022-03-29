@@ -4,8 +4,9 @@ from OpenHub.homekit_accessories.homkit_sensor_interface import HomeKitSensorInt
 import logging
 from OpenHub.globals import driver
 from pyhap.const import CATEGORY_CAMERA
-from pyhap.camera import Camera as PyHapCamera
-from pyhap import tlv
+from pyhap.camera import Camera as PyHapCamera, STREAMING_STATUS, SELECTED_STREAM_CONFIGURATION_TYPES, RTP_PARAM_TYPES, \
+    AUDIO_CODEC_PARAM_TYPES, AUDIO_TYPES, VIDEO_TYPES, VIDEO_CODEC_PARAM_TYPES, VIDEO_ATTRIBUTES_TYPES
+from pyhap import tlv, util
 from pyhap.camera import SETUP_TYPES, SETUP_ADDR_INFO, SETUP_SRTP_PARAM, SETUP_STATUS, NO_SRTP, SRTP_CRYPTO_SUITES
 from pyhap.camera import VIDEO_CODEC_PARAM_PROFILE_ID_TYPES, VIDEO_CODEC_PARAM_LEVEL_TYPES
 from uuid import UUID
@@ -65,10 +66,10 @@ class Camera(PyHapCamera):
                     }
                 ],
             },
-            "srtp": 'false',
+            "srtp": True,
 
             # hard code the address if auto-detection does not work as desired: e.g. "192.168.1.226"
-            "address": "192.168.3.143",
+            "address": util.get_local_address(),
             'start_stream_cmd': (
                 "gst-launch-1.0 v4l2src ! "
                 "video/x-h264, width={width},height={height},framerate={fps}/1 ! "
@@ -193,6 +194,10 @@ class Camera(PyHapCamera):
 
         cmd = self.start_stream_cmd.format(**stream_config_temp).split()
         logger.debug('Executing start stream command: "%s"', ' '.join(cmd))
+
+        if self._streaming_status[stream_config_temp['stream_idx']] == STREAMING_STATUS['STREAMING']:
+            await self.stop_stream(session_info)
+
         try:
             process = await asyncio.create_subprocess_exec(*cmd,
                     stdout=asyncio.subprocess.DEVNULL,
@@ -209,12 +214,13 @@ class Camera(PyHapCamera):
             session_info['id'],
             process.pid
         )
-        stdout, stderr = await process.communicate()
-        print(f'[{cmd!r} exited with {process.returncode}]')
+        stdout, stderr = await asyncio.wait_for(
+            process.communicate(), timeout=2.0)
         if stdout:
             print(f'[stdout]\n{stdout.decode()}')
         if stderr:
             print(f'[stderr]\n{stderr.decode()}')
+            return False
         return True
 
     async def stop_stream(self, session_info):  # pylint: disable=no-self-use
@@ -235,7 +241,7 @@ class Camera(PyHapCamera):
             try:
                 ffmpeg_process.terminate()
                 _, stderr = await asyncio.wait_for(
-                    ffmpeg_process.communicate(), timeout=5.0)
+                    ffmpeg_process.communicate(), timeout=2.0)
                 logger.debug('Stream command stderr: %s', stderr)
             except asyncio.TimeoutError:
                 logger.error(
@@ -253,3 +259,111 @@ class Camera(PyHapCamera):
             logger.debug('Stream process stopped.')
         else:
             logger.warning('No process for session ID %s', session_id)
+
+
+    async def _start_stream(self, objs, reconfigure):  # pylint: disable=unused-argument
+        """Start or reconfigure video streaming for the given session.
+
+        Schedules ``self.start_stream`` or ``self.reconfigure``.
+
+        No support for reconfigure currently.
+
+        :param objs: TLV-decoded SelectedRTPStreamConfiguration
+        :type objs: ``dict``
+
+        :param reconfigure: Whether the stream should be reconfigured instead of
+            started.
+        :type reconfigure: bool
+        """
+        video_tlv = objs.get(SELECTED_STREAM_CONFIGURATION_TYPES['VIDEO'])
+        audio_tlv = objs.get(SELECTED_STREAM_CONFIGURATION_TYPES['AUDIO'])
+
+        opts = {}
+
+        if video_tlv:
+            video_objs = tlv.decode(video_tlv)
+
+            video_codec_params = video_objs.get(VIDEO_TYPES['CODEC_PARAM'])
+            if video_codec_params:
+                video_codec_param_objs = tlv.decode(video_codec_params)
+                opts['v_profile_id'] = \
+                    video_codec_param_objs[VIDEO_CODEC_PARAM_TYPES['PROFILE_ID']]
+                opts['v_level'] = \
+                    video_codec_param_objs[VIDEO_CODEC_PARAM_TYPES['LEVEL']]
+
+            video_attrs = video_objs.get(VIDEO_TYPES['ATTRIBUTES'])
+            if video_attrs:
+                video_attr_objs = tlv.decode(video_attrs)
+                opts['width'] = struct.unpack('<H',
+                            video_attr_objs[VIDEO_ATTRIBUTES_TYPES['IMAGE_WIDTH']])[0]
+                opts['height'] = struct.unpack('<H',
+                            video_attr_objs[VIDEO_ATTRIBUTES_TYPES['IMAGE_HEIGHT']])[0]
+                opts['fps'] = struct.unpack('<B',
+                                video_attr_objs[VIDEO_ATTRIBUTES_TYPES['FRAME_RATE']])[0]
+
+            video_rtp_param = video_objs.get(VIDEO_TYPES['RTP_PARAM'])
+            if video_rtp_param:
+                video_rtp_param_objs = tlv.decode(video_rtp_param)
+                if RTP_PARAM_TYPES['SYNCHRONIZATION_SOURCE'] in video_rtp_param_objs:
+                    opts['v_ssrc'] = struct.unpack('<I',
+                        video_rtp_param_objs.get(
+                            RTP_PARAM_TYPES['SYNCHRONIZATION_SOURCE']))[0]
+                if RTP_PARAM_TYPES['PAYLOAD_TYPE'] in video_rtp_param_objs:
+                    opts['v_payload_type'] = \
+                        video_rtp_param_objs.get(RTP_PARAM_TYPES['PAYLOAD_TYPE'])
+                if RTP_PARAM_TYPES['MAX_BIT_RATE'] in video_rtp_param_objs:
+                    opts['v_max_bitrate'] = struct.unpack('<H',
+                        video_rtp_param_objs.get(RTP_PARAM_TYPES['MAX_BIT_RATE']))[0]
+                if RTP_PARAM_TYPES['RTCP_SEND_INTERVAL'] in video_rtp_param_objs:
+                    opts['v_rtcp_interval'] = struct.unpack('<f',
+                        video_rtp_param_objs.get(RTP_PARAM_TYPES['RTCP_SEND_INTERVAL']))[0]
+                if RTP_PARAM_TYPES['MAX_MTU'] in video_rtp_param_objs:
+                    opts['v_max_mtu'] = video_rtp_param_objs.get(RTP_PARAM_TYPES['MAX_MTU'])
+
+        if audio_tlv:
+            audio_objs = tlv.decode(audio_tlv)
+
+            opts['a_codec'] = audio_objs[AUDIO_TYPES['CODEC']]
+            audio_codec_param_objs = tlv.decode(
+                                        audio_objs[AUDIO_TYPES['CODEC_PARAM']])
+            audio_rtp_param_objs = tlv.decode(
+                                        audio_objs[AUDIO_TYPES['RTP_PARAM']])
+            opts['a_comfort_noise'] = audio_objs[AUDIO_TYPES['COMFORT_NOISE']]
+
+            opts['a_channel'] = \
+                audio_codec_param_objs[AUDIO_CODEC_PARAM_TYPES['CHANNEL']][0]
+            opts['a_bitrate'] = struct.unpack('?',
+                audio_codec_param_objs[AUDIO_CODEC_PARAM_TYPES['BIT_RATE']])[0]
+            opts['a_sample_rate'] = 8 * (
+                1 + audio_codec_param_objs[AUDIO_CODEC_PARAM_TYPES['SAMPLE_RATE']][0])
+            opts['a_packet_time'] = struct.unpack('<B',
+                audio_codec_param_objs[AUDIO_CODEC_PARAM_TYPES['PACKET_TIME']])[0]
+
+            opts['a_ssrc'] = struct.unpack('<I',
+                audio_rtp_param_objs[RTP_PARAM_TYPES['SYNCHRONIZATION_SOURCE']])[0]
+            opts['a_payload_type'] = audio_rtp_param_objs[RTP_PARAM_TYPES['PAYLOAD_TYPE']]
+            opts['a_max_bitrate'] = struct.unpack('<H',
+                audio_rtp_param_objs[RTP_PARAM_TYPES['MAX_BIT_RATE']])[0]
+            opts['a_rtcp_interval'] = struct.unpack('<f',
+                audio_rtp_param_objs[RTP_PARAM_TYPES['RTCP_SEND_INTERVAL']])[0]
+            opts['a_comfort_payload_type'] = \
+                audio_rtp_param_objs[RTP_PARAM_TYPES['COMFORT_NOISE_PAYLOAD_TYPE']]
+
+        session_objs = tlv.decode(objs[SELECTED_STREAM_CONFIGURATION_TYPES['SESSION']])
+        session_id = UUID(bytes=session_objs[SETUP_TYPES['SESSION_ID']])
+        session_info = self.sessions[session_id]
+        stream_idx = session_info['stream_idx']
+
+        opts.update(session_info)
+        success = await self.reconfigure_stream(session_info, opts) if reconfigure \
+            else await self.start_stream(session_info, opts)
+
+        if success:
+            self._streaming_status[stream_idx] = STREAMING_STATUS['STREAMING']
+        else:
+            logger.error(
+                '[%s] Failed to start/reconfigure stream, deleting session.',
+                session_id
+            )
+            self._streaming_status[stream_idx] = STREAMING_STATUS['AVAILABLE']
+            del self.sessions[session_id]
