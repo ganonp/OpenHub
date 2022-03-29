@@ -8,7 +8,7 @@ Main features:
 * Managed through a GUI via [OpenHubAPI](https://github.com/ganonp/OpenHubAPI)
 * Works with the home automation framework [Home Assistant](https://github.com/home-assistant/home-assistant).
 * Works with HomeKit and Siri
-* Camera works with Raspberry Pi Zero + PiCam
+* Camera works with Raspberry Pi Zero (and more powerful pis) + PiCam
 
 Accessories For:
 * Air Temperature
